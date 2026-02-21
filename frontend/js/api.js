@@ -46,10 +46,22 @@ async function apiRequest(url, options = {}) {
       headers['Authorization'] = `Bearer ${token}`;
     }
     
+    console.log('Making API request to:', url);
+    
     const response = await fetch(url, {
       ...options,
       headers
     });
+    
+    // Check content type before parsing
+    const contentType = response.headers.get('content-type');
+    
+    if (!contentType || !contentType.includes('application/json')) {
+      // Response is not JSON (probably HTML error page)
+      const text = await response.text();
+      console.error('Non-JSON response:', text.substring(0, 200));
+      throw new Error('Server returned an invalid response. Please check if the backend is running correctly.');
+    }
     
     const data = await response.json();
     
@@ -60,6 +72,12 @@ async function apiRequest(url, options = {}) {
     return data;
   } catch (error) {
     console.error('API Error:', error);
+    
+    // Provide more helpful error messages
+    if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+      throw new Error('Cannot connect to server. Please check if the backend is running.');
+    }
+    
     throw error;
   }
 }

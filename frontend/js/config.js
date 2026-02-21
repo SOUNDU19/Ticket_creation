@@ -1,8 +1,28 @@
 // API Configuration
 // Automatically detect environment
-const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:5000/api'
-  : '/api'; // Use relative path for production (Vercel)
+let API_BASE_URL;
+
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+  // Local development
+  API_BASE_URL = 'http://localhost:5000/api';
+} else if (window.location.hostname.includes('vercel.app')) {
+  // Vercel deployment - use relative path
+  API_BASE_URL = '/api';
+} else if (window.location.hostname.includes('onrender.com')) {
+  // Render deployment - check if it's the backend or frontend URL
+  if (window.location.hostname.includes('backend') || window.location.hostname.includes('nexora-backend')) {
+    API_BASE_URL = '/api';
+  } else {
+    // Frontend is separate, need to set backend URL manually
+    // Replace this with your actual backend URL
+    API_BASE_URL = 'https://nexora-backend.onrender.com/api';
+  }
+} else {
+  // Default to relative path for other deployments
+  API_BASE_URL = '/api';
+}
+
+console.log('API Base URL:', API_BASE_URL);
 
 // API Endpoints
 const API_ENDPOINTS = {
