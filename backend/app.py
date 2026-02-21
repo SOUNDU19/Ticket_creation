@@ -100,6 +100,9 @@ def create_app(config_name='default'):
     
     return app
 
+# Create app instance for gunicorn
+app = create_app(os.getenv('FLASK_ENV', 'production'))
+
 if __name__ == '__main__':
     app = create_app(os.getenv('FLASK_ENV', 'development'))
     print("\n" + "="*60)
