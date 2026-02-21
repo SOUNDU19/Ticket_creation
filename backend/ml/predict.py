@@ -1,11 +1,7 @@
 import joblib
-import spacy
 import re
 import os
 import numpy as np
-
-# Load spaCy model
-nlp = spacy.load('en_core_web_sm')
 
 # Load model and vectorizer
 MODEL_PATH = 'ml/model.pkl'
@@ -72,36 +68,30 @@ def extract_keywords(text):
     return ' '.join(keywords)
 
 def preprocess_text(text):
-    """Preprocess text using spaCy"""
-    doc = nlp(text)
-    tokens = [token.lemma_ for token in doc if not token.is_stop and not token.is_punct and len(token.text) > 2]
+    """Preprocess text with basic tokenization"""
+    # Simple stopwords list
+    stopwords = {'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 
+                 'of', 'with', 'by', 'from', 'as', 'is', 'was', 'are', 'were', 'been',
+                 'be', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 
+                 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that'}
+    
+    # Tokenize and filter
+    words = text.lower().split()
+    tokens = [word for word in words if word not in stopwords and len(word) > 2]
     return ' '.join(tokens)
 
 def extract_entities(text):
-    """Extract named entities using spaCy"""
-    doc = nlp(text)
-    
+    """Extract named entities using pattern matching"""
     entities = {
         'persons': [],
         'software': [],
         'error_codes': []
     }
     
-    # Extract named entities
-    for ent in doc.ents:
-        if ent.label_ == 'PERSON':
-            entities['persons'].append(ent.text)
-        elif ent.label_ in ['PRODUCT', 'ORG']:
-            entities['software'].append(ent.text)
-    
     # Extract error codes (pattern matching)
     error_pattern = r'\b[A-Z]{2,}\s?\d{3,}\b|\berror\s?\d+\b'
     error_codes = re.findall(error_pattern, text, re.IGNORECASE)
     entities['error_codes'] = list(set(error_codes))
-    
-    # Remove duplicates
-    entities['persons'] = list(set(entities['persons']))
-    entities['software'] = list(set(entities['software']))
     
     return entities
 
