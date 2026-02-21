@@ -12,14 +12,16 @@ class Config:
     
     # Database
     AVIAN_CONNECTION_STRING = os.getenv('AVIAN_CONNECTION_STRING', None)
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///nexora.db')
+    # Use /tmp for Vercel serverless (ephemeral storage)
+    db_path = os.getenv('DATABASE_URL', '/tmp/nexora.db' if os.getenv('VERCEL') else 'sqlite:///instance/nexora.db')
+    SQLALCHEMY_DATABASE_URI = db_path if db_path.startswith('sqlite:///') or db_path.startswith('postgresql://') else f'sqlite:///{db_path}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # CORS
     CORS_ORIGINS = os.getenv('CORS_ORIGINS', '*')
     
     # Upload
-    UPLOAD_FOLDER = 'uploads'
+    UPLOAD_FOLDER = '/tmp/uploads' if os.getenv('VERCEL') else 'uploads'
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
     
     # ML Models
