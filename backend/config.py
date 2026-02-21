@@ -17,8 +17,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = db_path if db_path.startswith('sqlite:///') or db_path.startswith('postgresql://') else f'sqlite:///{db_path}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
-    # CORS
-    CORS_ORIGINS = os.getenv('CORS_ORIGINS', '*')
+    # CORS - Allow Vercel frontend and local development
+    CORS_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:8000,https://ticket-creation-c1xe.vercel.app,https://*.vercel.app')
     
     # Upload
     UPLOAD_FOLDER = '/tmp/uploads' if os.getenv('VERCEL') else 'uploads'

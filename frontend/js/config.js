@@ -6,8 +6,8 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
   // Local development
   API_BASE_URL = 'http://localhost:5000/api';
 } else {
-  // Production - Vercel or other platforms use relative path
-  API_BASE_URL = '/api';
+  // Production - Use Render backend
+  API_BASE_URL = 'https://ticket-creation-2.onrender.com/api';
 }
 
 console.log('API Base URL:', API_BASE_URL);
