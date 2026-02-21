@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Ticket - NexoraAI</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">NexoraAI</div>
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="create-ticket.html">Create Ticket</a></li>
+        <li><a href="history.html">History</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="#" onclick="authUtils.logout()" class="btn btn-secondary">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 1400px;">
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+      <div class="step active" data-step="1">
+        <div class="step-number">1</div>
+        <div class="step-label">Describe Issue</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="2">
+        <div class="step-number">2</div>
+        <div class="step-label">AI Analysis</div>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="3">
+        <div class="step-number">3</div>
+        <div class="step-label">Review & Submit</div>
+      </div>
+    </div>
+
+    <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 2rem;">AI-Powered Ticket Creation</h1>
+    <p style="color: rgba(255,255,255,0.7); margin-bottom: 2rem;">Describe your issue naturally - our AI will analyze, categorize, and structure your ticket automatically</p>
+
+    <div style="display: grid; grid-template-columns: 60% 40%; gap: 2rem; position: relative;">
+      <!-- Glowing Divider -->
+      <div class="vertical-divider"></div>
+
+      <!-- Form Section -->
+      <div class="glass-container" style="position: relative;">
+        <form id="ticketForm">
+          <div class="form-group">
+            <label class="form-label">Ticket Title *</label>
+            <input type="text" class="form-input" id="title" placeholder="Brief summary of the issue" required>
+            <div class="helper-text">Provide a clear, concise title for your issue</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description *</label>
+            <textarea class="form-input" id="description" placeholder="Describe your issue in detail... Include what happened, when it occurred, and any error messages you received." required style="min-height: 180px;"></textarea>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+              <div>
+                <span class="char-counter">
+                  <span id="charCount">0</span> / 1000 characters
+                </span>
+                <span id="minLengthIndicator" class="helper-text" style="margin-left: 1rem; color: #f59e0b;">Minimum 20 characters</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Department</label>
+            <select class="form-input" id="department">
+              <option value="">Select department (optional)</option>
+              <option value="technical">Technical Support</option>
+              <option value="billing">Billing & Payments</option>
+              <option value="account">Account Management</option>
+              <option value="fraud">Fraud & Security</option>
+              <option value="general">General Inquiry</option>
+            </select>
+          </div>
+
+
+
+          <!-- Advanced Options -->
+          <div class="advanced-options">
+            <button type="button" class="advanced-toggle" id="advancedToggle">
+              <span>Advanced Options</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="advanced-content" id="advancedContent">
+              <div class="form-group">
+                <label class="form-label">Custom Tags</label>
+                <input type="text" class="form-input" id="customTags" placeholder="e.g., urgent, payment-issue, bug">
+                <div class="helper-text">Separate tags with commas</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Manual Priority Override</label>
+                <select class="form-input" id="manualPriority">
+                  <option value="">Let AI decide</option>
+                  <option value="critical">Critical</option>
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button type="button" class="btn btn-secondary" id="analyzeBtn" style="flex: 1;">
+              <span class="btn-icon">🤖</span>
+              <span>Analyze with AI</span>
+            </button>
+            <button type="submit" class="btn btn-primary" style="flex: 1;" id="submitBtn" disabled>
+              <span>Create Ticket</span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- AI Preview Panel -->
+      <div class="glass-container ai-preview-panel" style="position: relative;">
+        <div class="ai-glow-blob"></div>
+        <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.5rem;">🤖</span>
+          AI Analysis
+        </h3>
+        
+        <!-- Loading State -->
+        <div id="aiLoading" style="display: none;">
+          <div class="ai-loading-sequence">
+            <div class="loading-step active" data-step="1">
+              <div class="loading-spinner"></div>
+              <span>Understanding issue...</span>
+            </div>
+            <div class="loading-step" data-step="2">
+              <div class="loading-spinner"></div>
+              <span>Extracting entities...</span>
+            </div>
+            <div class="loading-step" data-step="3">
+              <div class="loading-spinner"></div>
+              <span>Assigning priority...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Results -->
+        <div id="aiPreview" style="display: none;">
+          <div class="ai-result-item">
+            <label class="form-label">Predicted Category</label>
+            <div class="ai-result-value">
+              <span class="category-badge" id="categoryPreview">—</span>
+              <select class="form-input" id="categoryOverride" style="margin-top: 0.5rem; font-size: 0.875rem;">
+                <option value="">Override category...</option>
+                <option value="Technical">Technical</option>
+                <option value="Billing">Billing</option>
+                <option value="Account">Account</option>
+                <option value="General Inquiry">General Inquiry</option>
+                <option value="Fraud">Fraud</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="ai-result-item">
+            <label class="form-label">Predicted Priority</label>
+            <div class="ai-result-value">
+              <span class="priority-badge" id="priorityPreview">—</span>
+            </div>
+          </div>
+
+          <div class="ai-result-item">
+            <label class="form-label">Confidence Score</label>
+            <div class="confidence-container">
+              <div class="confidence-bar-bg">
+                <div class="confidence-bar" id="confidenceBar"></div>
+              </div>
+              <span class="confidence-text" id="confidenceText">0%</span>
+            </div>
+          </div>
+
+          <div class="ai-result-item">
+            <label class="form-label">Extracted Entities</label>
+            <div class="entities-container" id="entitiesPreview">
+              <span class="entity-placeholder">No entities extracted</span>
+            </div>
+          </div>
+
+          <!-- Duplicate Warning -->
+          <div id="duplicateWarning" class="duplicate-warning" style="display: none;">
+            <div style="display: flex; align-items: start; gap: 0.75rem;">
+              <span style="font-size: 1.5rem;">⚠️</span>
+              <div style="flex: 1;">
+                <div style="font-weight: 600; margin-bottom: 0.25rem;">Similar Issue Found</div>
+                <p style="font-size: 0.875rem; color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;">
+                  A ticket with similar description already exists
+                </p>
+                <a href="#" class="duplicate-link" id="duplicateLink">View previous ticket →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Placeholder State -->
+        <div id="aiPlaceholder" class="ai-placeholder">
+          <div class="placeholder-icon">🤖</div>
+          <h4>Ready to Analyze</h4>
+          <p>Fill in the ticket details and click "Analyze with AI" to get intelligent predictions</p>
+          <div class="placeholder-features">
+            <div class="placeholder-feature">
+              <span>✓</span> Auto-categorization
+            </div>
+            <div class="placeholder-feature">
+              <span>✓</span> Priority detection
+            </div>
+            <div class="placeholder-feature">
+              <span>✓</span> Entity extraction
+            </div>
+            <div class="placeholder-feature">
+              <span>✓</span> Duplicate check
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Modal -->
+  <div class="modal" id="reviewModal">
+    <div class="modal-overlay" onclick="closeReviewModal()"></div>
+    <div class="modal-content review-modal">
+      <div class="modal-header">
+        <h2>Review Your Ticket</h2>
+        <button class="modal-close" onclick="closeReviewModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="review-section">
+          <label>Title</label>
+          <div class="review-value" id="reviewTitle"></div>
+        </div>
+        <div class="review-section">
+          <label>Category</label>
+          <div class="review-value" id="reviewCategory"></div>
+        </div>
+        <div class="review-section">
+          <label>Priority</label>
+          <div class="review-value" id="reviewPriority"></div>
+        </div>
+        <div class="review-section">
+          <label>Description</label>
+          <div class="review-value" id="reviewDescription" style="max-height: 150px; overflow-y: auto;"></div>
+        </div>
+        <div class="review-section">
+          <label>Extracted Entities</label>
+          <div class="review-value" id="reviewEntities"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeReviewModal()">Edit</button>
+        <button class="btn btn-primary" onclick="confirmCreate()">
+          <span>Confirm & Create</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p class="footer-credit">Designed & Developed by Soundarya</p>
+  </footer>
+
+  <script src="js/particles.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    // Protect page
+    if (!authUtils.protectPage()) {
+      throw new Error('Unauthorized');
+    }
+
+    let aiPrediction = null;
+    let currentStep = 1;
+
+    // Update step indicator
+    function updateStep(step) {
+      currentStep = step;
+      document.querySelectorAll('.step').forEach(s => {
+        const stepNum = parseInt(s.dataset.step);
+        s.classList.toggle('active', stepNum === step);
+        s.classList.toggle('completed', stepNum < step);
+      });
+    }
+
+    // Character counter with validation
+    const descriptionInput = document.getElementById('description');
+    descriptionInput.addEventListener('input', (e) => {
+      const length = e.target.value.length;
+      document.getElementById('charCount').textContent = length;
+      
+      const minIndicator = document.getElementById('minLengthIndicator');
+      if (length >= 20) {
+        minIndicator.style.display = 'none';
+      } else {
+        minIndicator.style.display = 'inline';
+      }
+      
+      // Limit to 1000 characters
+      if (length > 1000) {
+        e.target.value = e.target.value.substring(0, 1000);
+        document.getElementById('charCount').textContent = '1000';
+      }
+    });
+
+    // Advanced options toggle
+    document.getElementById('advancedToggle').addEventListener('click', function() {
+      const content = document.getElementById('advancedContent');
+      const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+      
+      if (isOpen) {
+        content.style.maxHeight = '0';
+        this.classList.remove('open');
+      } else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        this.classList.add('open');
+      }
+    });
+
+
+
+    // Analyze with AI
+    document.getElementById('analyzeBtn').addEventListener('click', async () => {
+      const description = document.getElementById('description').value.trim();
+      
+      if (!description) {
+        showToast('Please enter a description first', 'warning');
+        return;
+      }
+
+      if (description.length < 20) {
+        showToast('Description must be at least 20 characters', 'warning');
+        return;
+      }
+
+      updateStep(2);
+
+      const analyzeBtn = document.getElementById('analyzeBtn');
+      analyzeBtn.disabled = true;
+
+      // Show loading sequence
+      document.getElementById('aiPlaceholder').style.display = 'none';
+      document.getElementById('aiPreview').style.display = 'none';
+      document.getElementById('aiLoading').style.display = 'block';
+
+      // Animate loading steps
+      await animateLoadingSteps();
+
+      try {
+        aiPrediction = await api.predict(description);
+
+        // Hide loading, show results
+        document.getElementById('aiLoading').style.display = 'none';
+        document.getElementById('aiPreview').style.display = 'block';
+        document.getElementById('aiPreview').style.animation = 'fadeInUp 0.5s ease';
+
+        // Update category
+        const categoryBadge = document.getElementById('categoryPreview');
+        categoryBadge.textContent = aiPrediction.category;
+        categoryBadge.className = 'category-badge';
+
+        // Update priority
+        const priorityBadge = document.getElementById('priorityPreview');
+        priorityBadge.textContent = aiPrediction.priority.toUpperCase();
+        priorityBadge.className = `priority-badge priority-${aiPrediction.priority}`;
+
+        // Update confidence
+        const confidencePercent = Math.round(aiPrediction.confidence * 100);
+        const confidenceBar = document.getElementById('confidenceBar');
+        const confidenceText = document.getElementById('confidenceText');
+        
+        setTimeout(() => {
+          confidenceBar.style.width = confidencePercent + '%';
+          confidenceText.textContent = confidencePercent + '%';
+          
+          // Color based on confidence
+          if (confidencePercent >= 85) {
+            confidenceBar.style.background = 'linear-gradient(90deg, #10b981, #059669)';
+          } else if (confidencePercent >= 60) {
+            confidenceBar.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
+          } else {
+            confidenceBar.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
+          }
+        }, 100);
+
+        // Display entities as chips
+        const entities = aiPrediction.entities;
+        const entitiesContainer = document.getElementById('entitiesPreview');
+        entitiesContainer.innerHTML = '';
+        
+        let hasEntities = false;
+        
+        if (entities.persons && entities.persons.length > 0) {
+          hasEntities = true;
+          entities.persons.forEach(person => {
+            entitiesContainer.innerHTML += `<span class="entity-chip entity-person">👤 ${person}</span>`;
+          });
+        }
+        if (entities.software && entities.software.length > 0) {
+          hasEntities = true;
+          entities.software.forEach(software => {
+            entitiesContainer.innerHTML += `<span class="entity-chip entity-software">💻 ${software}</span>`;
+          });
+        }
+        if (entities.error_codes && entities.error_codes.length > 0) {
+          hasEntities = true;
+          entities.error_codes.forEach(code => {
+            entitiesContainer.innerHTML += `<span class="entity-chip entity-error">⚠️ ${code}</span>`;
+          });
+        }
+        
+        if (!hasEntities) {
+          entitiesContainer.innerHTML = '<span class="entity-placeholder">No entities extracted</span>';
+        }
+
+        // Check for duplicates (simulated)
+        if (Math.random() > 0.8) {
+          document.getElementById('duplicateWarning').style.display = 'block';
+        }
+
+        // Enable submit button
+        document.getElementById('submitBtn').disabled = false;
+
+        showToast('AI analysis complete!', 'success');
+      } catch (error) {
+        document.getElementById('aiLoading').style.display = 'none';
+        document.getElementById('aiPlaceholder').style.display = 'block';
+        showToast('AI analysis failed: ' + error.message, 'error');
+        updateStep(1);
+      } finally {
+        analyzeBtn.disabled = false;
+      }
+    });
+
+    // Animate loading steps
+    async function animateLoadingSteps() {
+      const steps = document.querySelectorAll('.loading-step');
+      
+      for (let i = 0; i < steps.length; i++) {
+        steps[i].classList.add('active');
+        await new Promise(resolve => setTimeout(resolve, 800));
+        steps[i].classList.remove('active');
+        steps[i].classList.add('completed');
+      }
+      
+      // Reset for next use
+      setTimeout(() => {
+        steps.forEach(s => {
+          s.classList.remove('active', 'completed');
+        });
+      }, 500);
+    }
+
+    // Category override
+    document.getElementById('categoryOverride').addEventListener('change', (e) => {
+      if (e.target.value && aiPrediction) {
+        aiPrediction.category = e.target.value;
+        document.getElementById('categoryPreview').textContent = e.target.value;
+        showToast('Category updated', 'success');
+      }
+    });
+
+    // Submit form - show review modal
+    document.getElementById('ticketForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      if (!aiPrediction) {
+        showToast('Please analyze with AI first', 'warning');
+        return;
+      }
+
+      updateStep(3);
+
+      // Populate review modal
+      document.getElementById('reviewTitle').textContent = document.getElementById('title').value.trim();
+      document.getElementById('reviewCategory').innerHTML = `<span class="category-badge">${aiPrediction.category}</span>`;
+      document.getElementById('reviewPriority').innerHTML = `<span class="priority-badge priority-${aiPrediction.priority}">${aiPrediction.priority.toUpperCase()}</span>`;
+      document.getElementById('reviewDescription').textContent = document.getElementById('description').value.trim();
+      
+      // Copy entities
+      const entitiesHTML = document.getElementById('entitiesPreview').innerHTML;
+      document.getElementById('reviewEntities').innerHTML = entitiesHTML;
+
+      // Show modal
+      document.getElementById('reviewModal').classList.add('active');
+    });
+
+    // Close review modal
+    window.closeReviewModal = function() {
+      document.getElementById('reviewModal').classList.remove('active');
+      updateStep(2);
+    };
+
+    // Confirm and create ticket
+    window.confirmCreate = async function() {
+      const title = document.getElementById('title').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const manualPriority = document.getElementById('manualPriority').value;
+
+      const confirmBtn = event.target;
+      confirmBtn.disabled = true;
+      confirmBtn.innerHTML = '<span class="btn-spinner"></span><span>Creating...</span>';
+
+      try {
+        await api.createTicket({
+          title,
+          description,
+          category: aiPrediction.category,
+          priority: manualPriority || aiPrediction.priority,
+          confidence: aiPrediction.confidence,
+          department: document.getElementById('department').value,
+          tags: document.getElementById('customTags').value
+        });
+
+        showToast('Ticket created successfully!', 'success');
+
+        setTimeout(() => {
+          window.location.href = 'history.html';
+        }, 1000);
+      } catch (error) {
+        showToast('Failed to create ticket: ' + error.message, 'error');
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = '<span>Confirm & Create</span>';
+      }
+    };
+  </script>
+</body>
+</html>

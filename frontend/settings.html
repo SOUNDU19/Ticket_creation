@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - NexoraAI</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">NexoraAI</div>
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="settings.html">Settings</a></li>
+        <li><a href="#" onclick="authUtils.logout()" class="btn btn-secondary">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 800px;">
+    <h1 style="font-size: 2.5rem; margin-bottom: 2rem;">Settings</h1>
+
+    <div class="glass-container mb-3">
+      <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Appearance</h2>
+      <div class="form-group">
+        <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer;">
+          <input type="checkbox" id="darkMode" checked>
+          <div>
+            <div style="font-weight: 600;">Dark Mode</div>
+            <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">Use dark theme (currently enabled)</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="glass-container mb-3">
+      <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Notifications</h2>
+      <div class="form-group">
+        <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer;">
+          <input type="checkbox" id="emailNotif" checked>
+          <div>
+            <div style="font-weight: 600;">Email Notifications</div>
+            <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">Receive email updates for ticket status changes</div>
+          </div>
+        </label>
+      </div>
+      <div class="form-group">
+        <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer;">
+          <input type="checkbox" id="pushNotif">
+          <div>
+            <div style="font-weight: 600;">Push Notifications</div>
+            <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">Receive browser push notifications</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="glass-container">
+      <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Account Security</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 1rem;">
+        <div>
+          <div style="font-weight: 600;">Two-Factor Authentication</div>
+          <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">Add an extra layer of security</div>
+        </div>
+        <button class="btn btn-secondary">Enable</button>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 12px;">
+        <div>
+          <div style="font-weight: 600;">Active Sessions</div>
+          <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6);">Manage your active sessions</div>
+        </div>
+        <button class="btn btn-secondary">View</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p class="footer-credit">Designed & Developed by Soundarya</p>
+  </footer>
+
+  <script src="js/particles.js"></script>`n  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    if (!authUtils.protectPage()) throw new Error('Unauthorized');
+
+    document.getElementById('darkMode').addEventListener('change', (e) => {
+      showToast(e.target.checked ? 'Dark mode enabled' : 'Dark mode disabled', 'success');
+    });
+
+    document.getElementById('emailNotif').addEventListener('change', (e) => {
+      showToast(e.target.checked ? 'Email notifications enabled' : 'Email notifications disabled', 'success');
+    });
+
+    document.getElementById('pushNotif').addEventListener('change', (e) => {
+      showToast(e.target.checked ? 'Push notifications enabled' : 'Push notifications disabled', 'success');
+    });
+  </script>
+</body>
+</html>

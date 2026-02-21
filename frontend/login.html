@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - NexoraAI</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    /* Dark glassmorphism login design matching landing page */
+    .login-container {
+      min-height: 100vh;
+      background: #0a0a0a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Floating Gradient Orbs - matching landing page */
+    .login-container::before,
+    .login-container::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: 0;
+      pointer-events: none;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .login-container::before {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, transparent 70%);
+      top: 20%;
+      left: 10%;
+      animation: float 25s ease-in-out infinite;
+    }
+
+    .login-container::after {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.35) 0%, transparent 70%);
+      bottom: 20%;
+      right: 10%;
+      animation: float 30s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+      }
+      33% {
+        transform: translate(50px, -50px) scale(1.1);
+      }
+      66% {
+        transform: translate(-30px, 30px) scale(0.9);
+      }
+    }
+
+    .login-card {
+      background: rgba(31, 31, 31, 0.7);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 3rem;
+      max-width: 450px;
+      width: 100%;
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 100px rgba(168, 85, 247, 0.15);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-logo {
+      font-size: 1.75rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a855f7 0%, #f97316 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    /* Login Type Tabs */
+    .login-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.875rem 1rem;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: inherit;
+    }
+
+    .tab-btn:hover {
+      color: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #a855f7 0%, #f97316 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+    }
+
+    .tab-icon {
+      font-size: 1.1rem;
+    }
+
+    .admin-info {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: rgba(168, 85, 247, 0.1);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .login-header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: #ffffff;
+    }
+
+    .login-header p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 0.9rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      padding-right: 3rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      color: #ffffff;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #a855f7;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.4);
+      pointer-events: none;
+    }
+
+    .form-group:has(.form-label) .input-icon {
+      top: calc(50% + 0.875rem);
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #a855f7;
+      cursor: pointer;
+    }
+
+    .checkbox-group label {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      color: #c084fc;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .forgot-link:hover {
+      color: #a855f7;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.875rem 2rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      margin-bottom: 1rem;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+      z-index: -1;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #a855f7 0%, #f97316 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(168, 85, 247, 0.6);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .form-divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 1.5rem 0;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.875rem;
+    }
+
+    .form-divider::before,
+    .form-divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .form-divider span {
+      padding: 0 1rem;
+    }
+
+    .social-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .social-buttons .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    /* Google Sign-In Button Styling */
+    .social-buttons .g_id_signin {
+      width: 100%;
+    }
+
+    .social-buttons .g_id_signin > div {
+      width: 100% !important;
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+
+    .auth-footer a {
+      color: #c084fc;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .auth-footer a:hover {
+      color: #a855f7;
+    }
+
+    .back-home {
+      text-align: center;
+      margin-top: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-home a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+
+    .back-home a:hover {
+      color: #ffffff;
+    }
+
+    .footer {
+      background: transparent;
+      padding: 2rem;
+      text-align: center;
+      margin-top: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-credit {
+      font-weight: 600;
+      background: linear-gradient(135deg, #a855f7, #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .login-container {
+        padding: 1rem;
+      }
+      
+      .login-card {
+        padding: 2rem;
+      }
+      
+      .brand-logo {
+        font-size: 1.5rem;
+      }
+      
+      .login-header h1 {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="brand-logo">NexoraAI</div>
+      
+      <!-- Login Type Tabs -->
+      <div class="login-tabs">
+        <button class="tab-btn active" onclick="switchLoginType('user')" id="userTab">
+          <span class="tab-icon">👤</span>
+          <span>User Login</span>
+        </button>
+        <button class="tab-btn" onclick="switchLoginType('admin')" id="adminTab">
+          <span class="tab-icon">🔐</span>
+          <span>Admin Login</span>
+        </button>
+      </div>
+      
+      <div class="login-header">
+        <h1 id="loginTitle">Welcome back</h1>
+        <p id="loginSubtitle">Sign in to your NexoraAI account</p>
+      </div>
+
+      <form id="loginForm">
+        <input type="hidden" id="loginType" value="user">
+        
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="email" placeholder="you@company.com" required>
+          <span class="input-icon">✉️</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="password" placeholder="Enter your password" required>
+          <span class="input-icon">🔒</span>
+        </div>
+
+        <div class="form-options">
+          <div class="checkbox-group">
+            <input type="checkbox" id="remember">
+            <label for="remember">Remember me</label>
+          </div>
+          <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          Sign In
+        </button>
+
+        <!-- User-only Google Sign-In -->
+        <div id="googleSignInSection">
+          <div class="form-divider">
+            <span>or continue with</span>
+          </div>
+
+          <div class="social-buttons">
+            <div id="g_id_onload"
+                 data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                 data-context="signin"
+                 data-ux_mode="popup"
+                 data-callback="handleGoogleSignIn"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                 data-type="standard"
+                 data-shape="rectangular"
+                 data-theme="outline"
+                 data-text="signin_with"
+                 data-size="large"
+                 data-logo_alignment="left">
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="auth-footer" id="authFooter">
+        Don't have an account? <a href="signup.html">Sign up for free</a>
+      </div>
+    </div>
+
+    <div class="back-home">
+      <a href="landing.html">← Back to Home</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p class="footer-credit">Designed & Developed by Soundarya</p>
+  </footer>
+
+  <script src="js/particles.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/google-auth.js"></script>
+  <script>
+    // Redirect if already logged in
+    authUtils.redirectIfLoggedIn();
+
+    // Switch between user and admin login
+    function switchLoginType(type) {
+      const loginType = document.getElementById('loginType');
+      const userTab = document.getElementById('userTab');
+      const adminTab = document.getElementById('adminTab');
+      const loginTitle = document.getElementById('loginTitle');
+      const loginSubtitle = document.getElementById('loginSubtitle');
+      const submitBtn = document.getElementById('submitBtn');
+      const googleSection = document.getElementById('googleSignInSection');
+      const authFooter = document.getElementById('authFooter');
+      const adminInfo = document.getElementById('adminInfo');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      
+      loginType.value = type;
+      
+      if (type === 'admin') {
+        // Admin login UI
+        userTab.classList.remove('active');
+        adminTab.classList.add('active');
+        loginTitle.textContent = 'Admin Access';
+        loginSubtitle.textContent = 'Sign in to the admin panel';
+        submitBtn.textContent = 'Sign In as Admin';
+        submitBtn.style.background = 'linear-gradient(135deg, #dc2626 0%, #f97316 100%)';
+        googleSection.style.display = 'none';
+        authFooter.style.display = 'none';
+        emailInput.placeholder = 'Enter admin email';
+        passwordInput.placeholder = 'Enter admin password';
+      } else {
+        // User login UI
+        userTab.classList.add('active');
+        adminTab.classList.remove('active');
+        loginTitle.textContent = 'Welcome back';
+        loginSubtitle.textContent = 'Sign in to your NexoraAI account';
+        submitBtn.textContent = 'Sign In';
+        submitBtn.style.background = 'linear-gradient(135deg, #a855f7 0%, #f97316 100%)';
+        googleSection.style.display = 'block';
+        authFooter.style.display = 'block';
+        emailInput.placeholder = 'john.doe@company.com';
+        passwordInput.placeholder = 'Enter your password';
+      }
+      
+      // Clear form
+      emailInput.value = '';
+      passwordInput.value = '';
+    }
+
+    // Google OAuth callback for login
+    window.handleGoogleSignIn = async function(response) {
+      try {
+        // Decode the JWT token from Google
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        
+        showToast('Google sign-in successful! Checking account...', 'success');
+        
+        // Try to login with Google email
+        // First, we need to check if user exists, if not, redirect to signup
+        try {
+          // For demo purposes, we'll create a temporary login
+          // In production, you'd implement proper Google OAuth backend
+          const userData = {
+            email: payload.email,
+            name: payload.name,
+            id: payload.sub,
+            role: 'user'
+          };
+          
+          // Create a temporary token (in production, this should come from backend)
+          const tempToken = btoa(JSON.stringify({
+            user_id: payload.sub,
+            email: payload.email,
+            exp: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+          }));
+          
+          // Save auth data
+          authUtils.saveAuthData(tempToken, userData);
+          
+          showToast('Login successful! Redirecting...', 'success');
+          
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 1000);
+          
+        } catch (error) {
+          // If user doesn't exist, redirect to signup
+          showToast('Account not found. Redirecting to signup...', 'info');
+          setTimeout(() => {
+            window.location.href = 'signup.html';
+          }, 1500);
+        }
+        
+      } catch (error) {
+        console.error('Google sign-in error:', error);
+        showToast('Google sign-in failed. Please try again.', 'error');
+      }
+    };
+
+    // Handle login form
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const loginType = document.getElementById('loginType').value;
+      
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Signing in...';
+      
+      try {
+        const response = await api.login({ email, password });
+        
+        // Validate role matches login type
+        if (loginType === 'admin' && response.user.role !== 'admin') {
+          showToast('Invalid admin credentials. Please use admin account.', 'error');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          return;
+        }
+        
+        if (loginType === 'user' && response.user.role === 'admin') {
+          showToast('This is an admin account. Please use Admin Login tab.', 'error');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+          return;
+        }
+        
+        // Save auth data
+        authUtils.saveAuthData(response.token, response.user);
+        
+        showToast('Login successful! Redirecting...', 'success');
+        
+        setTimeout(() => {
+          // Redirect based on user role
+          if (response.user.role === 'admin') {
+            window.location.href = 'admin-dashboard-enhanced.html';
+          } else {
+            window.location.href = 'dashboard.html';
+          }
+        }, 1000);
+      } catch (error) {
+        showToast(error.message || 'Login failed', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+
+    // Toast notification function
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.style.cssText = `
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        z-index: 3000;
+        max-width: 400px;
+        animation: slideInRight 0.3s ease;
+      `;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Add CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideInRight {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

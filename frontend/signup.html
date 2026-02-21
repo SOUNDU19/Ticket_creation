@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - NexoraAI</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    /* Dark glassmorphism signup design matching landing page */
+    .signup-container {
+      min-height: 100vh;
+      background: #0a0a0a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Floating Gradient Orbs - matching landing page */
+    .signup-container::before,
+    .signup-container::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: 0;
+      pointer-events: none;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .signup-container::before {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, transparent 70%);
+      top: 20%;
+      left: 10%;
+      animation: float 25s ease-in-out infinite;
+    }
+
+    .signup-container::after {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.35) 0%, transparent 70%);
+      bottom: 20%;
+      right: 10%;
+      animation: float 30s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+      }
+      33% {
+        transform: translate(50px, -50px) scale(1.1);
+      }
+      66% {
+        transform: translate(-30px, 30px) scale(0.9);
+      }
+    }
+
+    .signup-card {
+      background: rgba(31, 31, 31, 0.7);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 2.5rem;
+      max-width: 450px;
+      width: 100%;
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 100px rgba(168, 85, 247, 0.15);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-logo {
+      font-size: 1.75rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a855f7 0%, #f97316 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .signup-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 0.75rem;
+    }
+
+    .signup-subtitle {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 2rem;
+    }
+
+    .free-badge {
+      background: rgba(168, 85, 247, 0.15);
+      color: #c084fc;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 2rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #a855f7, #f97316);
+      border-radius: 3px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      color: #ffffff;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #a855f7;
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .step-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 0.875rem 1.5rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+      z-index: -1;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn-back {
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-back:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .btn-next {
+      background: linear-gradient(135deg, #a855f7 0%, #f97316 100%);
+      color: white;
+      box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-next:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(168, 85, 247, 0.6);
+    }
+
+    .btn-next:disabled {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.5);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .signup-step {
+      display: none;
+    }
+
+    .signup-step.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .footer-text {
+      margin-top: 2rem;
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .login-link {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .login-link a {
+      color: #c084fc;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .login-link a:hover {
+      color: #a855f7;
+      text-decoration: underline;
+    }
+
+    /* Form Divider */
+    .form-divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 1.5rem 0;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.875rem;
+    }
+
+    .form-divider::before,
+    .form-divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .form-divider span {
+      padding: 0 1rem;
+    }
+
+    /* Social Buttons */
+    .social-buttons {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .social-buttons .g_id_signin {
+      width: 100%;
+    }
+
+    .social-buttons .g_id_signin > div {
+      width: 100% !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .signup-container {
+        padding: 1rem;
+      }
+      
+      .signup-card {
+        padding: 2rem;
+      }
+      
+      .brand-logo {
+        font-size: 1.5rem;
+      }
+      
+      .signup-title {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <div class="signup-card">
+      <div class="brand-logo">NexoraAI</div>
+      
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 33.33%"></div>
+      </div>
+
+      <!-- Step 1: Name -->
+      <form id="step1" class="signup-step active">
+        <h2 class="signup-title">Start your free 14-day trial</h2>
+        <div class="free-badge">100% free. No credit card required.</div>
+        
+        <div class="form-group">
+          <label class="form-label">First name</label>
+          <input type="text" class="form-input" id="firstName" placeholder="John" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Last name</label>
+          <input type="text" class="form-input" id="lastName" placeholder="Doe" required>
+        </div>
+        
+        <div class="step-buttons">
+          <button type="button" class="btn btn-back" onclick="goBack()">Back</button>
+          <button type="button" class="btn btn-next" onclick="nextStep(1)">Next</button>
+        </div>
+        
+        <div class="form-divider">
+          <span>or sign up with</span>
+        </div>
+        
+        <div class="social-buttons">
+          <div id="g_id_onload"
+               data-client_id="YOUR_GOOGLE_CLIENT_ID"
+               data-context="signup"
+               data-ux_mode="popup"
+               data-callback="handleGoogleSignUp"
+               data-auto_prompt="false">
+          </div>
+          <div class="g_id_signin"
+               data-type="standard"
+               data-shape="rectangular"
+               data-theme="outline"
+               data-text="signup_with"
+               data-size="large"
+               data-logo_alignment="left">
+          </div>
+        </div>
+      </form>
+
+      <!-- Step 2: Contact Info -->
+      <form id="step2" class="signup-step">
+        <h2 class="signup-title" id="step2Title">Thanks, what's your phone number?</h2>
+        <div class="free-badge">100% free. No credit card required.</div>
+        
+        <div class="form-group">
+          <input type="tel" class="form-input" id="phoneNumber" placeholder="+1 (555) 123-4567" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Email address</label>
+          <input type="email" class="form-input" id="email" placeholder="john.doe@company.com" required>
+        </div>
+        
+        <div class="step-buttons">
+          <button type="button" class="btn btn-back" onclick="prevStep(2)">Back</button>
+          <button type="button" class="btn btn-next" onclick="nextStep(2)">Next</button>
+        </div>
+      </form>
+
+      <!-- Step 3: Password -->
+      <form id="step3" class="signup-step">
+        <h2 class="signup-title">Create your password</h2>
+        <div class="free-badge">100% free. No credit card required.</div>
+        
+        <div class="form-group" id="passwordGroup">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" id="password" placeholder="Create a strong password" required minlength="6">
+        </div>
+        
+        <div class="step-buttons">
+          <button type="button" class="btn btn-back" onclick="prevStep(3)">Back</button>
+          <button type="button" class="btn btn-next" onclick="submitSignup()">Create Account</button>
+        </div>
+      </form>
+
+      <div class="login-link">
+        Already have an account? <a href="login.html">Sign in</a>
+      </div>
+
+      <div class="footer-text">©NexoraAI 2026</div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/google-auth.js"></script>
+  <script>
+    // Redirect if already logged in
+    authUtils.redirectIfLoggedIn();
+
+    let currentStep = 1;
+    const formData = {};
+
+    function updateProgress() {
+      const progressFill = document.getElementById('progressFill');
+      const percentage = (currentStep / 3) * 100;
+      progressFill.style.width = percentage + '%';
+    }
+
+    function nextStep(step) {
+      // Validate current step
+      const currentForm = document.getElementById(`step${step}`);
+      const inputs = currentForm.querySelectorAll('input[required]');
+      let valid = true;
+
+      inputs.forEach(input => {
+        if (!input.value.trim()) {
+          valid = false;
+          input.style.borderColor = '#f44336';
+          setTimeout(() => {
+            input.style.borderColor = '#e0e0e0';
+          }, 2000);
+        } else {
+          // Store data
+          formData[input.id] = input.value;
+        }
+      });
+
+      if (!valid) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+      }
+
+      // Email validation for step 2
+      if (step === 2) {
+        const email = document.getElementById('email').value;
+        if (!isValidEmail(email)) {
+          showToast('Please enter a valid email address', 'error');
+          return;
+        }
+      }
+
+      // Move to next step
+      if (step < 3) {
+        currentStep = step + 1;
+        updateStepDisplay();
+        updateProgress();
+        
+        // Update step 2 title with user's name
+        if (currentStep === 2) {
+          const firstName = formData.firstName || 'there';
+          document.getElementById('step2Title').textContent = `Thanks ${firstName}, what's your phone number?`;
+        }
+      }
+    }
+
+    function prevStep(step) {
+      if (step > 1) {
+        currentStep = step - 1;
+        updateStepDisplay();
+        updateProgress();
+      }
+    }
+
+    function updateStepDisplay() {
+      // Hide all steps
+      document.querySelectorAll('.signup-step').forEach(s => s.classList.remove('active'));
+      
+      // Show current step
+      document.getElementById(`step${currentStep}`).classList.add('active');
+      
+      // Handle Google auth users in step 3
+      if (currentStep === 3 && formData.googleAuth) {
+        // Update step 3 title
+        if (currentStep === 3) {
+          document.querySelector('#step3 .signup-title').textContent = 'Create your password';
+        }
+      }
+    }
+
+    function goBack() {
+      window.location.href = 'landing.html';
+    }
+
+    // Email validation
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    // Submit signup
+    async function submitSignup() {
+      let password, confirmPassword;
+      
+      if (formData.googleAuth) {
+        // For Google users, use the generated password
+        password = formData.googlePassword;
+        confirmPassword = formData.googlePassword;
+      } else {
+        // For regular users, get password from form
+        password = document.getElementById('password').value;
+        confirmPassword = password;
+        
+        if (password.length < 6) {
+          showToast('Password must be at least 6 characters long', 'error');
+          return;
+        }
+      }
+
+      // Store password data
+      formData.password = password;
+
+      // Show loading
+      const submitBtn = event.target;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating account...';
+
+      try {
+        const response = await api.signup({
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          mobile: formData.phoneNumber,
+          password: formData.password,
+          confirmPassword: formData.password
+        });
+
+        showToast('Account created successfully! Redirecting to login...', 'success');
+
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 1500);
+      } catch (error) {
+        showToast(error.message || 'Signup failed', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Create Account';
+      }
+    }
+
+    // Google OAuth callback
+    window.handleGoogleSignUp = async function(response) {
+      try {
+        // Decode the JWT token from Google
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        
+        // Extract user information
+        const userData = {
+          name: payload.name,
+          email: payload.email,
+          firstName: payload.given_name,
+          lastName: payload.family_name,
+          mobile: '', // Will need to be filled later
+          password: generateRandomPassword(), // Generate a random password
+          confirmPassword: '' // Will be set to same as password
+        };
+        
+        userData.confirmPassword = userData.password;
+        
+        showToast('Google sign-in successful! Please complete your profile...', 'success');
+        
+        // Pre-fill the form with Google data
+        document.getElementById('firstName').value = userData.firstName || '';
+        document.getElementById('lastName').value = userData.lastName || '';
+        
+        // Store Google data for later use
+        formData.firstName = userData.firstName;
+        formData.lastName = userData.lastName;
+        formData.email = userData.email;
+        formData.googleAuth = true;
+        formData.googlePassword = userData.password;
+        
+        // Move to step 2 to collect phone info
+        currentStep = 2;
+        updateStepDisplay();
+        updateProgress();
+        
+        // Pre-fill email in step 2
+        document.getElementById('email').value = userData.email;
+        document.getElementById('email').disabled = true; // Disable editing
+        
+        // Update step 2 title
+        const firstName = userData.firstName || 'there';
+        document.getElementById('step2Title').textContent = `Thanks ${firstName}, what's your phone number?`;
+        
+      } catch (error) {
+        console.error('Google sign-in error:', error);
+        showToast('Google sign-in failed. Please try again.', 'error');
+      }
+    };
+
+    // Generate random password for Google users
+    function generateRandomPassword() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+      let password = '';
+      for (let i = 0; i < 12; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return password;
+    }
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.style.cssText = `
+        position: fixed;
+        top: 2rem;
+        right: 2rem;
+        background: ${type === 'success' ? '#4caf50' : '#f44336'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        z-index: 3000;
+        max-width: 400px;
+        animation: slideInRight 0.3s ease;
+      `;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    // Add CSS animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideInRight {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>

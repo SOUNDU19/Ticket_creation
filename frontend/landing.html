@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexoraAI - AI-Powered Ticket Creation & Categorization System</title>
+  <link rel="stylesheet" href="css/landing-styles.css">
+  <link rel="stylesheet" href="css/landing-animations.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Animated Background Blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- Sticky Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">NexoraAI</div>
+      <ul class="nav-menu">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#solutions">Solutions</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="login.html" class="nav-link-secondary">Login</a></li>
+        <li><a href="signup.html" class="btn btn-primary">Get Started</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <h1 class="hero-title fade-in">
+          Automate Your Support Desk with NexoraAI Intelligence
+        </h1>
+        <p class="hero-subtitle fade-in delay-1">
+          Transform unstructured support requests into structured, prioritized tickets using advanced AI and NLP.
+        </p>
+        <div class="hero-buttons fade-in delay-2">
+          <a href="signup.html" class="btn btn-primary btn-large">Start Free Trial</a>
+          <a href="#demo" class="btn btn-secondary btn-large">Watch Demo</a>
+        </div>
+      </div>
+      <div class="hero-visual fade-in delay-3">
+        <div class="glass-card ticket-preview">
+          <div class="ticket-header">
+            <span class="ticket-label">AI-Generated Ticket</span>
+            <span class="ticket-status">Processing...</span>
+          </div>
+          <div class="ticket-field">
+            <label>Subject</label>
+            <div class="field-value">Unable to access customer database</div>
+          </div>
+          <div class="ticket-field">
+            <label>Description</label>
+            <div class="field-value">Getting error 500 when trying to connect...</div>
+          </div>
+          <div class="ticket-badges">
+            <span class="badge badge-category">Incident</span>
+            <span class="badge badge-priority">High Priority</span>
+          </div>
+          <div class="confidence-bar">
+            <div class="confidence-label">
+              <span>AI Confidence</span>
+              <span>98%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 98%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Proof Stats -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-card glass-card fade-in-scroll">
+          <div class="stat-number" data-target="98">0</div>
+          <div class="stat-label">Categorization Accuracy</div>
+        </div>
+        <div class="stat-card glass-card fade-in-scroll">
+          <div class="stat-number" data-target="60">0</div>
+          <div class="stat-label">Faster Ticket Processing</div>
+        </div>
+        <div class="stat-card glass-card fade-in-scroll">
+          <div class="stat-number" data-target="40">0</div>
+          <div class="stat-label">Reduction in Manual Triage</div>
+        </div>
+        <div class="stat-card glass-card fade-in-scroll">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">AI Assistance</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features-section">
+    <div class="container">
+      <h2 class="section-title fade-in-scroll">Everything You Need to Run a Smart Support Operation</h2>
+      <div class="features-grid">
+        <div class="feature-card glass-card fade-in-scroll">
+          <div class="feature-icon">🎫</div>
+          <h3 class="feature-title">AI Ticket Creation</h3>
+          <p class="feature-description">Automatically generate structured tickets from unstructured user input via email, chat, or web forms.</p>
+        </div>
+        <div class="feature-card glass-card fade-in-scroll">
+          <div class="feature-icon">🎯</div>
+          <h3 class="feature-title">Smart Categorization</h3>
+          <p class="feature-description">ML-powered classification assigns tickets to the right category with 98% accuracy using TF-IDF and NLP.</p>
+        </div>
+        <div class="feature-card glass-card fade-in-scroll">
+          <div class="feature-icon">⚡</div>
+          <h3 class="feature-title">Intelligent Priority Detection</h3>
+          <p class="feature-description">Sentiment analysis and keyword detection automatically assign priority levels based on urgency and impact.</p>
+        </div>
+        <div class="feature-card glass-card fade-in-scroll">
+          <div class="feature-icon">🔍</div>
+          <h3 class="feature-title">Entity Extraction</h3>
+          <p class="feature-description">Named Entity Recognition extracts user details, software names, error codes, and affected systems automatically.</p>
+        </div>
+        <div class="feature-card glass-card fade-in-scroll">
+          <div class="feature-icon">📊</div>
+          <h3 class="feature-title">Real-time Dashboard</h3>
+          <p class="feature-description">Monitor ticket flow, AI performance metrics, and team productivity with comprehensive analytics.</p>
+        </div>
+        <div class="feature-card glass-card fade-in-scroll">
+          <div class="feature-icon">⚙️</div>
+          <h3 class="feature-title">Admin Control Panel</h3>
+          <p class="feature-description">Manage users, configure AI models, set routing rules, and customize workflows from a centralized interface.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works-section">
+    <div class="container">
+      <h2 class="section-title fade-in-scroll">How It Works</h2>
+      <div class="workflow">
+        <div class="workflow-step fade-in-scroll">
+          <div class="step-number">1</div>
+          <h3 class="step-title">User Submits Issue</h3>
+          <p class="step-description">Customer describes their problem in natural language via any channel</p>
+        </div>
+        <div class="workflow-connector"></div>
+        <div class="workflow-step fade-in-scroll">
+          <div class="step-number">2</div>
+          <h3 class="step-title">AI Analyzes with NLP</h3>
+          <p class="step-description">Machine learning models process text, extract entities, and classify intent</p>
+        </div>
+        <div class="workflow-connector"></div>
+        <div class="workflow-step fade-in-scroll">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Ticket Structured & Prioritized</h3>
+          <p class="step-description">System generates complete ticket with category, priority, and metadata</p>
+        </div>
+        <div class="workflow-connector"></div>
+        <div class="workflow-step fade-in-scroll">
+          <div class="step-number">4</div>
+          <h3 class="step-title">Support Team Resolves Faster</h3>
+          <p class="step-description">Agents receive organized, actionable tickets with all context needed</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solutions Section -->
+  <section id="solutions" class="solutions-section">
+    <div class="container">
+      <h2 class="section-title fade-in-scroll">Built for Modern Support Teams</h2>
+      <div class="solutions-grid">
+        <div class="solution-card glass-card fade-in-scroll">
+          <div class="solution-icon">💻</div>
+          <h3 class="solution-title">IT Support Teams</h3>
+          <p class="solution-description">Streamline incident management, automate ticket routing, and reduce resolution time for technical issues across your organization.</p>
+        </div>
+        <div class="solution-card glass-card fade-in-scroll">
+          <div class="solution-icon">🚀</div>
+          <h3 class="solution-title">SaaS Companies</h3>
+          <p class="solution-description">Scale customer support efficiently with AI-powered triage, ensuring every user request is categorized and prioritized instantly.</p>
+        </div>
+        <div class="solution-card glass-card fade-in-scroll">
+          <div class="solution-icon">🏢</div>
+          <h3 class="solution-title">Enterprise Helpdesks</h3>
+          <p class="solution-description">Handle high ticket volumes with intelligent automation, maintaining SLAs while reducing operational costs significantly.</p>
+        </div>
+        <div class="solution-card glass-card fade-in-scroll">
+          <div class="solution-icon">👥</div>
+          <h3 class="solution-title">Customer Support Operations</h3>
+          <p class="solution-description">Empower your team with AI-enhanced workflows, reducing manual data entry and allowing focus on customer satisfaction.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Technology Section -->
+  <section class="technology-section">
+    <div class="container">
+      <h2 class="section-title fade-in-scroll">Powered by Advanced AI Technology</h2>
+      <div class="technology-grid">
+        <div class="tech-card glass-card fade-in-scroll">
+          <h3 class="tech-title">TF-IDF + Machine Learning</h3>
+          <p class="tech-description">Text vectorization with Term Frequency-Inverse Document Frequency combined with supervised learning models for accurate classification.</p>
+        </div>
+        <div class="tech-card glass-card fade-in-scroll">
+          <h3 class="tech-title">Sentiment-Based Priority Assignment</h3>
+          <p class="tech-description">Natural language understanding analyzes urgency indicators, emotional tone, and business impact to assign appropriate priority levels.</p>
+        </div>
+        <div class="tech-card glass-card fade-in-scroll">
+          <h3 class="tech-title">Named Entity Recognition</h3>
+          <p class="tech-description">spaCy-powered NER extracts critical information including user names, software products, error codes, and system identifiers.</p>
+        </div>
+        <div class="tech-card glass-card fade-in-scroll">
+          <h3 class="tech-title">Duplicate Detection</h3>
+          <p class="tech-description">Semantic similarity algorithms identify related tickets, preventing duplicate work and surfacing existing solutions automatically.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials-section">
+    <div class="container">
+      <h2 class="section-title fade-in-scroll">Trusted by Support Teams Worldwide</h2>
+      <div class="testimonials-grid">
+        <div class="testimonial-card glass-card fade-in-scroll">
+          <p class="testimonial-text">"AI SmartDesk reduced our ticket triage time by 65%. Our support team can now focus on solving complex issues instead of categorizing tickets manually."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar"></div>
+            <div class="author-info">
+              <div class="author-name">Sarah Chen</div>
+              <div class="author-title">Head of IT Support, TechCorp</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card glass-card fade-in-scroll">
+          <p class="testimonial-text">"The accuracy is remarkable. We've seen a 40% improvement in first-response time since implementing AI SmartDesk. It's transformed our helpdesk operations."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar"></div>
+            <div class="author-info">
+              <div class="author-name">Michael Rodriguez</div>
+              <div class="author-title">Customer Success Director, CloudScale</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card glass-card fade-in-scroll">
+          <p class="testimonial-text">"Implementation was seamless, and the ROI was immediate. Our agents love the structured tickets with all context readily available. Highly recommended."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar"></div>
+            <div class="author-info">
+              <div class="author-name">Emily Watson</div>
+              <div class="author-title">VP of Operations, ServiceHub</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="pricing-section">
+    <div class="container">
+      <h2 class="section-title fade-in-scroll">Simple, Transparent Pricing</h2>
+      <div class="pricing-grid">
+        <div class="pricing-card glass-card fade-in-scroll">
+          <h3 class="pricing-tier">Starter</h3>
+          <div class="pricing-price">
+            <span class="price-currency">$</span>
+            <span class="price-amount">49</span>
+            <span class="price-period">/month</span>
+          </div>
+          <ul class="pricing-features">
+            <li>✓ Up to 500 tickets/month</li>
+            <li>✓ AI categorization</li>
+            <li>✓ Basic analytics</li>
+            <li>✓ Email support</li>
+            <li>✓ 2 team members</li>
+          </ul>
+          <a href="signup.html" class="btn btn-primary btn-full">Start Free Trial</a>
+        </div>
+        <div class="pricing-card glass-card pricing-featured fade-in-scroll">
+          <div class="featured-badge">Most Popular</div>
+          <h3 class="pricing-tier">Pro</h3>
+          <div class="pricing-price">
+            <span class="price-currency">$</span>
+            <span class="price-amount">149</span>
+            <span class="price-period">/month</span>
+          </div>
+          <ul class="pricing-features">
+            <li>✓ Unlimited tickets</li>
+            <li>✓ Advanced AI features</li>
+            <li>✓ Real-time dashboard</li>
+            <li>✓ Priority support</li>
+            <li>✓ Unlimited team members</li>
+            <li>✓ Custom workflows</li>
+            <li>✓ API access</li>
+          </ul>
+          <a href="signup.html" class="btn btn-primary btn-full">Start Free Trial</a>
+        </div>
+        <div class="pricing-card glass-card fade-in-scroll">
+          <h3 class="pricing-tier">Enterprise</h3>
+          <div class="pricing-price">
+            <span class="price-amount">Custom</span>
+          </div>
+          <ul class="pricing-features">
+            <li>✓ Everything in Pro</li>
+            <li>✓ Custom AI models</li>
+            <li>✓ Dedicated support</li>
+            <li>✓ SLA guarantees</li>
+            <li>✓ On-premise deployment</li>
+            <li>✓ Advanced security</li>
+            <li>✓ Training & onboarding</li>
+          </ul>
+          <a href="#contact" class="btn btn-secondary btn-full">Contact Sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-content fade-in-scroll">
+        <h2 class="cta-title">Transform Your Support Workflow with AI</h2>
+        <p class="cta-subtitle">Join hundreds of teams automating their ticket management with NexoraAI</p>
+        <a href="signup.html" class="btn btn-primary btn-large">Start Free Trial</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-column">
+          <h4 class="footer-title">Product</h4>
+          <ul class="footer-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#solutions">Solutions</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#demo">Demo</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4 class="footer-title">Company</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">About</a></li>
+            <li><a href="#careers">Careers</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#blog">Blog</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4 class="footer-title">Resources</h4>
+          <ul class="footer-links">
+            <li><a href="documentation.html">Documentation</a></li>
+            <li><a href="#api">API Reference</a></li>
+            <li><a href="#support">Support</a></li>
+            <li><a href="#community">Community</a></li>
+          </ul>
+        </div>
+        <div class="footer-column">
+          <h4 class="footer-title">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#privacy">Privacy Policy</a></li>
+            <li><a href="#terms">Terms of Service</a></li>
+            <li><a href="#security">Security</a></li>
+            <li><a href="#compliance">Compliance</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 NexoraAI. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/landing-main.js"></script>
+</body>
+</html>

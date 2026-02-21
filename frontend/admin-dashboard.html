@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Control Center - NexoraAI</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    body {
+      background: #0a0a0a;
+      color: #ffffff;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    /* Admin Sidebar */
+    .admin-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .admin-sidebar {
+      width: 280px;
+      background: rgba(20, 20, 20, 0.95);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2rem 0;
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 1000;
+    }
+
+    .admin-logo {
+      padding: 0 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .admin-logo h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a855f7, #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.25rem;
+    }
+
+    .admin-logo p {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .admin-nav {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .admin-nav-item {
+      margin: 0.25rem 1rem;
+    }
+
+    .admin-nav-link {
+      display: flex;
+      align-items: cente</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-content">
+      <!-- Overview Section -->
+      <section id="overview-section" class="admin-section active">
+        <h1 class="section-title">System Overview</h1>
+        
+        <div class="stats-grid-admin" id="statsGrid">
+          <div class="spinner"></div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-top: 2rem;">
+          <div class="glass-container">
+            <h3 style="margin-bottom: 1rem;">Recent Tickets</h3>
+            <div id="recentTicketsTable"></div>
+          </div>
+          
+          <div class="glass-container">
+            <h3 style="margin-bottom: 1rem;">Quick Actions</h3>
+            <div class="quick-actions">
+              <button class="action-btn" onclick="exportData('tickets')">
+                <span>📥</span> Export Tickets
+              </button>
+              <button class="action-btn" onclick="exportData('users')">
+                <span>📥</span> Export Users
+              </button>
+              <button class="action-btn" onclick="showSection('settings')">
+                <span>⚙️</span> System Settings
+              </button>
+              <button class="action-btn" onclick="exportData('audit-logs')">
+                <span>📥</span> Export Audit Logs
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tickets Section -->
+      <section id="tickets-section" class="admin-section">
+        <h1 class="section-title">Ticket Management</h1>
+        
+        <div class="glass-container">
+          <div class="table-controls">
+            <div class="search-box">
+              <input type="text" id="ticketSearch" placeholder="Search tickets..." class="form-input">
+            </div>
+            <div class="filter-group">
+              <select id="statusFilter" class="form-input">
+                <option value="">All Status</option>
+                <option value="open">Open</option>
+                <option value="in_progress">In Progress</option>
+                <option value="resolved">Resolved</option>
+                <option value="closed">Closed</option>
+              </select>
+              <select id="priorityFilter" class="form-input">
+                <option value="">All Priority</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+              <select id="categoryFilter" class="form-input">
+                <option value="">All Categories</option>
+              </select>
+              <button class="btn btn-primary" onclick="loadTickets()">Apply Filters</button>
+            </div>
+          </div>
+
+          <div class="bulk-actions" id="bulkActions" style="display: none;">
+            <span id="selectedCount">0 selected</span>
+            <button class="btn btn-secondary" onclick="bulkUpdateStatus('closed')">Close Selected</button>
+            <button class="btn btn-secondary" onclick="bulkUpdatePriority('high')">Set High Priority</button>
+            <button class="btn btn-danger" onclick="bulkDelete()">Delete Selected</button>
+          </div>
+
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
+                  <th>ID</th>
+                  <th>User</th>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>AI Confidence</th>
+                  <th>Created</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ticketsTableBody">
+                <tr><td colspan="10" style="text-align: center; padding: 2rem;"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination" id="ticketsPagination"></div>
+        </div>
+      </section>
+
+      <!-- Analytics Section -->
+      <section id="analytics-section" class="admin-section">
+        <h1 class="section-title">Analytics Dashboard</h1>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+          <div class="glass-container">
+            <h3 style="margin-bottom: 1rem;">Tickets Over Time</h3>
+            <canvas id="ticketsTimelineChart"></canvas>
+          </div>
+          
+          <div class="glass-container">
+            <h3 style="margin-bottom: 1rem;">Category Distribution</h3>
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+          <div class="glass-container">
+            <h3 style="margin-bottom: 1rem;">Priority Breakdown</h3>
+            <canvas id="priorityChart"></canvas>
+          </div>
+          
+          <div class="glass-container">
+            <h3 style="margin-bottom: 1rem;">Status Distribution</h3>
+            <canvas id="statusChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI Monitoring Section -->
+      <section id="ai-monitoring-section" class="admin-section">
+        <h1 class="section-title">AI Model Monitoring</h1>
+        
+        <div class="stats-grid-admin" id="aiStatsGrid">
+          <div class="spinner"></div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+          <div class="glass-container">
+            <h3 style="margin-bottom: 1rem;">Confidence Distribution</h3>
+            <canvas id="confidenceChart"></canvas>
+          </div>
+          
+          <div class="glass-container">
+            <h3 style="margin-bottom: 1rem;">Category Predictions</h3>
+            <canvas id="categoryPredictionsChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Users Section -->
+      <section id="users-section" class="admin-section">
+        <h1 class="section-title">User Management</h1>
+        
+        <div class="glass-container">
+          <div class="table-controls">
+            <div class="search-box">
+              <input type="text" id="userSearch" placeholder="Search users..." class="form-input">
+              <button class="btn btn-primary" onclick="loadUsers()">Search</button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Company</th>
+                  <th>Tickets</th>
+                  <th>Status</th>
+                  <th>Last Login</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <tr><td colspan="7" style="text-align: center; padding: 2rem;"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination" id="usersPagination"></div>
+        </div>
+      </section>
+
+      <!-- Audit Logs Section -->
+      <section id="audit-logs-section" class="admin-section">
+        <h1 class="section-title">Audit Logs</h1>
+        
+        <div class="glass-container">
+          <div class="table-controls">
+            <select id="actionFilter" class="form-input">
+              <option value="">All Actions</option>
+              <option value="ticket_updated">Ticket Updated</option>
+              <option value="ticket_deleted">Ticket Deleted</option>
+              <option value="user_updated">User Updated</option>
+              <option value="user_deactivated">User Deactivated</option>
+              <option value="settings_updated">Settings Updated</option>
+            </select>
+            <button class="btn btn-primary" onclick="loadAuditLogs()">Apply Filter</button>
+          </div>
+
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Admin</th>
+                  <th>Action</th>
+                  <th>Target Type</th>
+                  <th>Target ID</th>
+                  <th>IP Address</th>
+                </tr>
+              </thead>
+              <tbody id="auditLogsTableBody">
+                <tr><td colspan="6" style="text-align: center; padding: 2rem;"><div class="spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination" id="auditLogsPagination"></div>
+        </div>
+      </section>
+
+      <!-- Settings Section -->
+      <section id="settings-section" class="admin-section">
+        <h1 class="section-title">System Settings</h1>
+        
+        <div class="glass-container">
+          <form id="settingsForm">
+            <h3 style="margin-bottom: 1.5rem;">AI Settings</h3>
+            
+            <div class="form-group">
+              <label class="form-label">AI Confidence Threshold</label>
+              <input type="number" step="0.01" min="0" max="1" id="aiConfidenceThreshold" class="form-input">
+              <div class="helper-text">Minimum confidence score to accept AI predictions (0-1)</div>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="duplicateDetection">
+                <span>Enable Duplicate Detection</span>
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="autoCategorization">
+                <span>Enable Auto-Categorization</span>
+              </label>
+            </div>
+
+            <h3 style="margin: 2rem 0 1.5rem;">SLA Settings (Hours)</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Critical Priority SLA</label>
+                <input type="number" id="slaCritical" class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">High Priority SLA</label>
+                <input type="number" id="slaHigh" class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Medium Priority SLA</label>
+                <input type="number" id="slaMedium" class="form-input">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Low Priority SLA</label>
+                <input type="number" id="slaLow" class="form-input">
+              </div>
+            </div>
+
+            <h3 style="margin: 2rem 0 1.5rem;">Notification Settings</h3>
+            
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="adminEmailNotifications">
+                <span>Admin Email Notifications</span>
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="criticalTicketAlerts">
+                <span>Critical Ticket Alerts</span>
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="slaBreachAlerts">
+                <span>SLA Breach Alerts</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="margin-top: 2rem;">Save Settings</button>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p class="footer-credit">Designed & Developed by Soundarya</p>
+  </footer>
+
+  <script src="js/particles.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/admin-dashboard.js"></script>
+</body>
+</html>

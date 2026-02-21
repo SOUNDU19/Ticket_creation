@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Details - NexoraAI</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">NexoraAI</div>
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="create-ticket.html">Create Ticket</a></li>
+        <li><a href="history.html">History</a></li>
+        <li><a href="analytics.html">Analytics</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="#" onclick="authUtils.logout()" class="btn btn-secondary">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 900px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <h1 style="font-size: 2.5rem;">Ticket Details</h1>
+      <button class="btn btn-secondary" onclick="downloadPDF()">📄 Download PDF</button>
+    </div>
+
+    <div id="ticketContent" class="glass-container">
+      <div class="spinner"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p class="footer-credit">Designed & Developed by Soundarya</p>
+  </footer>
+
+  <script src="js/particles.js"></script>`n  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    if (!authUtils.protectPage()) throw new Error('Unauthorized');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const ticketId = urlParams.get('id');
+    let currentTicket = null;
+
+    async function loadTicket() {
+      try {
+        const response = await api.getTicket(ticketId);
+        currentTicket = response.ticket;
+        
+        const content = document.getElementById('ticketContent');
+        content.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 2rem;">
+            <div>
+              <h2 style="font-size: 1.75rem; margin-bottom: 0.5rem;">${currentTicket.title}</h2>
+              <p style="color: rgba(255,255,255,0.5);">ID: ${currentTicket.id}</p>
+            </div>
+            <span class="badge badge-${currentTicket.priority === 'high' ? 'danger' : currentTicket.priority === 'medium' ? 'warning' : 'success'}" style="font-size: 1rem; padding: 0.5rem 1rem;">${currentTicket.priority.toUpperCase()}</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div>
+              <label style="color: rgba(255,255,255,0.5); font-size: 0.875rem;">Category</label>
+              <p style="font-weight: 600; margin-top: 0.25rem;">${currentTicket.category}</p>
+            </div>
+            <div>
+              <label style="color: rgba(255,255,255,0.5); font-size: 0.875rem;">Status</label>
+              <p style="margin-top: 0.25rem;"><span class="badge badge-${currentTicket.status === 'open' ? 'primary' : currentTicket.status === 'in_progress' ? 'warning' : 'success'}">${currentTicket.status.replace('_', ' ').toUpperCase()}</span></p>
+            </div>
+            <div>
+              <label style="color: rgba(255,255,255,0.5); font-size: 0.875rem;">AI Confidence</label>
+              <p style="font-weight: 600; margin-top: 0.25rem;">${Math.round(currentTicket.ai_confidence * 100)}%</p>
+            </div>
+            <div>
+              <label style="color: rgba(255,255,255,0.5); font-size: 0.875rem;">Created</label>
+              <p style="font-weight: 600; margin-top: 0.25rem;">${new Date(currentTicket.created_at).toLocaleString()}</p>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 2rem;">
+            <label style="color: rgba(255,255,255,0.5); font-size: 0.875rem; margin-bottom: 0.5rem; display: block;">Description</label>
+            <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px; line-height: 1.6;">
+              ${currentTicket.description}
+            </div>
+          </div>
+
+          ${authUtils.isAdmin() ? `
+            <div style="border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+              <label style="color: rgba(255,255,255,0.5); font-size: 0.875rem; margin-bottom: 0.5rem; display: block;">Update Status (Admin)</label>
+              <select class="form-input" id="statusSelect" style="max-width: 300px;">
+                <option value="open" ${currentTicket.status === 'open' ? 'selected' : ''}>Open</option>
+                <option value="in_progress" ${currentTicket.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                <option value="closed" ${currentTicket.status === 'closed' ? 'selected' : ''}>Closed</option>
+              </select>
+              <button class="btn btn-primary mt-2" onclick="updateStatus()">Update Status</button>
+            </div>
+          ` : ''}
+        `;
+      } catch (error) {
+        showToast('Failed to load ticket', 'error');
+      }
+    }
+
+    async function updateStatus() {
+      const status = document.getElementById('statusSelect').value;
+      try {
+        await api.updateTicket({ ticket_id: ticketId, status });
+        showToast('Status updated successfully', 'success');
+        loadTicket();
+      } catch (error) {
+        showToast(error.message, 'error');
+      }
+    }
+
+    function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      doc.setFontSize(20);
+      doc.text('Ticket Details', 20, 20);
+      
+      doc.setFontSize(12);
+      doc.text(`Title: ${currentTicket.title}`, 20, 40);
+      doc.text(`ID: ${currentTicket.id}`, 20, 50);
+      doc.text(`Category: ${currentTicket.category}`, 20, 60);
+      doc.text(`Priority: ${currentTicket.priority}`, 20, 70);
+      doc.text(`Status: ${currentTicket.status}`, 20, 80);
+      doc.text(`Created: ${new Date(currentTicket.created_at).toLocaleString()}`, 20, 90);
+      
+      doc.text('Description:', 20, 110);
+      const splitText = doc.splitTextToSize(currentTicket.description, 170);
+      doc.text(splitText, 20, 120);
+      
+      doc.save(`ticket-${currentTicket.id}.pdf`);
+      showToast('PDF downloaded successfully', 'success');
+    }
+
+    loadTicket();
+  </script>
+</body>
+</html>
