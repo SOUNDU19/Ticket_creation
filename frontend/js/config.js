@@ -7,7 +7,7 @@ if (window.location.hostname === 'localhost' || window.location.hostname === '12
   API_BASE_URL = 'http://localhost:5000/api';
 } else {
   // Production - Use Render backend
-  API_BASE_URL = 'https://ticket-creation-2.onrender.com/api';
+  API_BASE_URL = 'https://ticket-creation-5.onrender.com/api';
 }
 
 console.log('API Base URL:', API_BASE_URL);
