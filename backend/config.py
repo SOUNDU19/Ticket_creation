@@ -12,16 +12,21 @@ class Config:
     
     # Database
     AVIAN_CONNECTION_STRING = os.getenv('AVIAN_CONNECTION_STRING', None)
-    # Use /tmp for Vercel serverless (ephemeral storage)
-    db_path = os.getenv('DATABASE_URL', '/tmp/nexora.db' if os.getenv('VERCEL') else 'sqlite:///instance/nexora.db')
-    SQLALCHEMY_DATABASE_URI = db_path if db_path.startswith('sqlite:///') or db_path.startswith('postgresql://') else f'sqlite:///{db_path}'
+    # Use absolute path for database
+    if os.getenv('RENDER'):
+        # On Render, use /opt/render/project/src for persistent storage
+        SQLALCHEMY_DATABASE_URI = 'sqlite:////opt/render/project/src/nexora.db'
+    else:
+        # Local development
+        SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///instance/nexora.db')
+    
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # CORS - Allow Vercel frontend and local development
     CORS_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:8000,https://ticket-creation-c1xe.vercel.app,https://*.vercel.app')
     
     # Upload
-    UPLOAD_FOLDER = '/tmp/uploads' if os.getenv('VERCEL') else 'uploads'
+    UPLOAD_FOLDER = '/opt/render/project/src/uploads' if os.getenv('RENDER') else 'uploads'
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
     
     # ML Models
