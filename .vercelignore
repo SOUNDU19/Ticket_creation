@@ -1,0 +1,15 @@
+# Ignore these files during Vercel deployment
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/instance/
+backend/uploads/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.db
+*.log
+.env
+.vscode/
+.git/
