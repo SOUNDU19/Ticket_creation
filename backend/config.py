@@ -12,13 +12,22 @@ class Config:
     
     # Database
     AVIAN_CONNECTION_STRING = os.getenv('AVIAN_CONNECTION_STRING', None)
-    # Use absolute path for database
-    if os.getenv('RENDER'):
-        # On Render, use /opt/render/project/src for persistent storage
+    
+    # Database configuration with PostgreSQL support
+    database_url = os.getenv('DATABASE_URL')
+    
+    if database_url:
+        # Render PostgreSQL or external database
+        # Fix for SQLAlchemy 1.4+ (postgres:// -> postgresql://)
+        if database_url.startswith('postgres://'):
+            database_url = database_url.replace('postgres://', 'postgresql://', 1)
+        SQLALCHEMY_DATABASE_URI = database_url
+    elif os.getenv('RENDER'):
+        # Render without PostgreSQL - use persistent disk
         SQLALCHEMY_DATABASE_URI = 'sqlite:////opt/render/project/src/nexora.db'
     else:
         # Local development
-        SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///instance/nexora.db')
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///instance/nexora.db'
     
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
