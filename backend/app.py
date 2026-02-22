@@ -25,11 +25,12 @@ def create_app(config_name='default'):
     # Initialize extensions
     CORS(app, resources={
         r"/api/*": {
-            "origins": app.config['CORS_ORIGINS'],
+            "origins": ["*"],  # Allow all origins for now
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"],
             "expose_headers": ["Content-Type", "Authorization"],
-            "supports_credentials": True
+            "supports_credentials": True,
+            "max_age": 3600
         }
     })
     JWTManager(app)
