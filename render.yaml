@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: ticket-creation
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: bash start.sh
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: RENDER
+        value: true
+      - key: FLASK_ENV
+        value: production
