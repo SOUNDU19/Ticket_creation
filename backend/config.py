@@ -23,7 +23,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # CORS - Allow Vercel frontend and local development
-    CORS_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:8000,https://ticket-creation-c1xe.vercel.app,https://*.vercel.app')
+    CORS_ORIGINS = os.getenv('CORS_ORIGINS', 'http://localhost:8000,http://127.0.0.1:8000,https://ticket-creation-c1xe.vercel.app,https://*.vercel.app').split(',')
     
     # Upload
     UPLOAD_FOLDER = '/opt/render/project/src/uploads' if os.getenv('RENDER') else 'uploads'

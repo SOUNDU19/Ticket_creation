@@ -45,38 +45,51 @@ def create_app(config_name='default'):
     
     # Create tables and default admin
     with app.app_context():
-        db.create_all()
-        
-        # Create uploads directory
-        os.makedirs('uploads/avatars', exist_ok=True)
-        
-        # Create default admin if not exists
-        admin = User.query.filter_by(email='admin@nexora.ai').first()
-        if not admin:
-            admin = User(
-                name='Admin',
-                email='admin@nexora.ai',
-                mobile='+1234567890',
-                role='admin'
-            )
-            admin.set_password('admin123')
-            db.session.add(admin)
-            db.session.flush()  # Get admin ID
+        try:
+            # Ensure database directory exists
+            db_path = app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
+            db_dir = os.path.dirname(db_path)
+            if db_dir:
+                os.makedirs(db_dir, exist_ok=True)
             
-            # Create notification settings for admin
-            admin_settings = NotificationSettings(user_id=admin.id)
-            db.session.add(admin_settings)
+            db.create_all()
+            print("✓ Database tables created")
             
-            db.session.commit()
-            print("✓ Default admin created: admin@nexora.ai / admin123")
-        
-        # Create default system settings if not exists
-        settings = SystemSettings.query.first()
-        if not settings:
-            settings = SystemSettings()
-            db.session.add(settings)
-            db.session.commit()
-            print("✓ Default system settings created")
+            # Create uploads directory
+            upload_dir = app.config.get('UPLOAD_FOLDER', 'uploads')
+            os.makedirs(os.path.join(upload_dir, 'avatars'), exist_ok=True)
+            print("✓ Upload directories created")
+            
+            # Create default admin if not exists
+            admin = User.query.filter_by(email='admin@nexora.ai').first()
+            if not admin:
+                admin = User(
+                    name='Admin',
+                    email='admin@nexora.ai',
+                    mobile='+1234567890',
+                    role='admin'
+                )
+                admin.set_password('admin123')
+                db.session.add(admin)
+                db.session.flush()  # Get admin ID
+                
+                # Create notification settings for admin
+                admin_settings = NotificationSettings(user_id=admin.id)
+                db.session.add(admin_settings)
+                
+                db.session.commit()
+                print("✓ Default admin created: admin@nexora.ai / admin123")
+            
+            # Create default system settings if not exists
+            settings = SystemSettings.query.first()
+            if not settings:
+                settings = SystemSettings()
+                db.session.add(settings)
+                db.session.commit()
+                print("✓ Default system settings created")
+        except Exception as e:
+            print(f"⚠ Database initialization warning: {str(e)}")
+            # Don't fail the app startup, just log the error
     
     # Serve uploaded files
     @app.route('/uploads/<path:filename>')
