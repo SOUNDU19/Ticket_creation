@@ -43,10 +43,11 @@
     <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 2rem;">AI-Powered Ticket Creation</h1>
     <p style="color: rgba(255,255,255,0.7); margin-bottom: 2rem;">Describe your issue naturally - our AI will analyze, categorize, and structure your ticket automatically</p>
 
-    <!-- Centered Form Container -->
-    <div style="max-width: 900px; margin: 0 auto;">
-      <!-- Form Section -->
-      <div class="glass-container" style="position: relative; margin-bottom: 2rem;">
+    <!-- Two Column Layout: Form Left, AI Analysis Right -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+      
+      <!-- LEFT: Ticket Form -->
+      <div class="glass-container" style="position: relative;">
         <form id="ticketForm">
           <div class="form-group">
             <label class="form-label">Ticket Title *</label>
@@ -97,8 +98,8 @@
         </form>
       </div>
 
-      <!-- AI Analysis & Actions Panel -->
-      <div class="glass-container ai-preview-panel" style="position: relative; margin-bottom: 2rem;">
+      <!-- RIGHT: AI Analysis Panel -->
+      <div class="glass-container ai-preview-panel" style="position: relative;">
         <div class="ai-glow-blob"></div>
         <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
           <span style="font-size: 1.5rem;">🤖</span>
