@@ -650,32 +650,7 @@ tbody tr:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Toast Notification */
-.toast {
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
-  background: rgba(31, 31, 31, 0.95);
-  backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 1rem 1.5rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  z-index: 3000;
-  max-width: 400px;
-  animation: slideInRight 0.3s ease;
-}
-
-@keyframes slideInRight {
-  from {
-    transform: translateX(400px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
+/* Toast Notification - Removed duplicate, see enhanced version below */
 
 .toast.success {
   border-left: 3px solid var(--success);
@@ -3136,6 +3111,8 @@ section > p {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
+  min-width: 300px;
+  max-width: 450px;
   padding: 1rem 1.5rem;
   background: rgba(31, 31, 31, 0.95);
   backdrop-filter: blur(20px);
@@ -3144,6 +3121,10 @@ section > p {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   z-index: 10000;
   animation: toastSlideIn 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  word-wrap: break-word;
 }
 
 @keyframes toastSlideIn {

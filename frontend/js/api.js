@@ -4,12 +4,20 @@
 function showToast(message, type = 'success') {
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
-  toast.innerHTML = `
-    <div style="display: flex; align-items: center; gap: 0.5rem;">
-      <span style="font-size: 1.25rem;">${type === 'success' ? '✓' : type === 'error' ? '✗' : '⚠'}</span>
-      <span>${message}</span>
-    </div>
-  `;
+  
+  // Create icon
+  const icon = document.createElement('span');
+  icon.style.fontSize = '1.25rem';
+  icon.style.flexShrink = '0';
+  icon.textContent = type === 'success' ? '✓' : type === 'error' ? '✗' : '⚠';
+  
+  // Create message
+  const messageSpan = document.createElement('span');
+  messageSpan.textContent = message;
+  messageSpan.style.flex = '1';
+  
+  toast.appendChild(icon);
+  toast.appendChild(messageSpan);
   document.body.appendChild(toast);
   
   setTimeout(() => {
