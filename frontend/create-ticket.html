@@ -43,12 +43,10 @@
     <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 2rem;">AI-Powered Ticket Creation</h1>
     <p style="color: rgba(255,255,255,0.7); margin-bottom: 2rem;">Describe your issue naturally - our AI will analyze, categorize, and structure your ticket automatically</p>
 
-    <div style="display: grid; grid-template-columns: 60% 40%; gap: 2rem; position: relative;">
-      <!-- Glowing Divider -->
-      <div class="vertical-divider"></div>
-
+    <!-- Centered Form Container -->
+    <div style="max-width: 900px; margin: 0 auto;">
       <!-- Form Section -->
-      <div class="glass-container" style="position: relative;">
+      <div class="glass-container" style="position: relative; margin-bottom: 2rem;">
         <form id="ticketForm">
           <div class="form-group">
             <label class="form-label">Ticket Title *</label>
@@ -99,8 +97,8 @@
         </form>
       </div>
 
-      <!-- AI Preview Panel -->
-      <div class="glass-container ai-preview-panel" style="position: relative;">
+      <!-- AI Analysis & Actions Panel -->
+      <div class="glass-container ai-preview-panel" style="position: relative; margin-bottom: 2rem;">
         <div class="ai-glow-blob"></div>
         <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
           <span style="font-size: 1.5rem;">🤖</span>
@@ -188,7 +186,7 @@
               <span class="btn-icon">🤖</span>
               <span>Analyze with AI</span>
             </button>
-            <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; font-size: 0.95rem; padding: 0.875rem 1.5rem;" id="submitBtn" disabled>
+            <button type="submit" class="btn btn-primary" form="ticketForm" style="width: 100%; justify-content: center; font-size: 0.95rem; padding: 0.875rem 1.5rem;" id="submitBtn" disabled>
               <span>Create Ticket</span>
             </button>
           </div>
