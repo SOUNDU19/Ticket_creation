@@ -41,7 +41,7 @@ function setupEventListeners() {
   }
   
   // Notification toggles - auto-save on change
-  const toggles = ['emailNotifications', 'ticketStatusUpdates', 'criticalAlerts', 'weeklySummary', 'aiInsightUpdates'];
+  const toggles = ['emailNotifications', 'ticketStatusUpdates', 'criticalAlerts', 'aiInsightUpdates'];
   toggles.forEach(id => {
     const element = document.getElementById(id);
     if (element) {
@@ -95,7 +95,6 @@ async function loadProfile() {
         document.getElementById('emailNotifications').checked = settings.email_notifications;
         document.getElementById('ticketStatusUpdates').checked = settings.ticket_status_updates;
         document.getElementById('criticalAlerts').checked = settings.critical_alerts;
-        document.getElementById('weeklySummary').checked = settings.weekly_summary;
         document.getElementById('aiInsightUpdates').checked = settings.ai_insight_updates;
       }
       
@@ -292,7 +291,7 @@ window.saveNotifications = async function() {
         email_notifications: document.getElementById('emailNotifications').checked,
         ticket_status_updates: document.getElementById('ticketStatusUpdates').checked,
         critical_alerts: document.getElementById('criticalAlerts').checked,
-        weekly_summary: document.getElementById('weeklySummary').checked,
+  
         ai_insight_updates: document.getElementById('aiInsightUpdates').checked
       };
       
