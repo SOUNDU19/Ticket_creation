@@ -160,8 +160,17 @@ def update_ticket():
         
         # Update status
         if 'status' in data:
-            ticket.status = data['status']
+            old_status = ticket.status
+            new_status = data['status']
+            ticket.status = new_status
             ticket.updated_at = datetime.utcnow()
+            
+            # Set resolved_at timestamp when status changes to resolved
+            if new_status == 'resolved' and old_status != 'resolved':
+                ticket.resolved_at = datetime.utcnow()
+            # Clear resolved_at if status changes from resolved to something else
+            elif old_status == 'resolved' and new_status != 'resolved':
+                ticket.resolved_at = None
         
         db.session.commit()
         

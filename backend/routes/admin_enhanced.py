@@ -627,16 +627,17 @@ def get_advanced_analytics():
         
         priority_dist = {pri: count for pri, count in priorities}
         
-        # Average resolution time
+        # Average resolution time - count by status field
         resolved_tickets = Ticket.query.filter(
-            Ticket.resolved_at.isnot(None)
+            or_(Ticket.status == 'resolved', Ticket.status == 'closed')
         ).all()
         
         if resolved_tickets:
-            resolution_times = [
-                (t.resolved_at - t.created_at).total_seconds() / 3600
-                for t in resolved_tickets
-            ]
+            resolution_times = []
+            for t in resolved_tickets:
+                # Use resolved_at if available, otherwise use updated_at
+                end_time = t.resolved_at if t.resolved_at else t.updated_at
+                resolution_times.append((end_time - t.created_at).total_seconds() / 3600)
             avg_resolution_time = sum(resolution_times) / len(resolution_times)
         else:
             avg_resolution_time = 0

@@ -5,6 +5,13 @@ let currentTicketId = null;
 let elevatedToken = null;
 let elevatedTimer = null;
 
+// Store chart instances for cleanup
+let chartInstances = {
+  ticketGrowth: null,
+  category: null,
+  priority: null
+};
+
 // Section Navigation
 function showSection(section) {
   document.querySelectorAll('.section-content').forEach(el => el.style.display = 'none');
@@ -92,7 +99,9 @@ function showElevatedBanner(expiresIn) {
 // Load Overview
 async function loadOverview() {
   try {
-    const analytics = await fetch(`${API_BASE_URL}/admin/advanced-analytics`, {
+    // Add cache-busting timestamp to force fresh data
+    const timestamp = new Date().getTime();
+    const analytics = await fetch(`${API_BASE_URL}/admin/advanced-analytics?_t=${timestamp}`, {
       headers: { 'Authorization': `Bearer ${authUtils.getToken()}` }
     }).then(r => r.json());
     
@@ -142,9 +151,20 @@ async function loadOverview() {
       </div>
     `;
     
+    // Destroy existing charts before creating new ones
+    if (chartInstances.ticketGrowth) {
+      chartInstances.ticketGrowth.destroy();
+    }
+    if (chartInstances.category) {
+      chartInstances.category.destroy();
+    }
+    if (chartInstances.priority) {
+      chartInstances.priority.destroy();
+    }
+    
     // Ticket Growth Chart
     const growthCtx = document.getElementById('ticketGrowthChart').getContext('2d');
-    new Chart(growthCtx, {
+    chartInstances.ticketGrowth = new Chart(growthCtx, {
       type: 'line',
       data: {
         labels: analytics.ticket_growth.map(d => new Date(d.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })),
@@ -169,7 +189,7 @@ async function loadOverview() {
     
     // Category Chart
     const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-    new Chart(categoryCtx, {
+    chartInstances.category = new Chart(categoryCtx, {
       type: 'doughnut',
       data: {
         labels: Object.keys(analytics.category_distribution),
@@ -186,7 +206,7 @@ async function loadOverview() {
     
     // Priority Chart
     const priorityCtx = document.getElementById('priorityChart').getContext('2d');
-    new Chart(priorityCtx, {
+    chartInstances.priority = new Chart(priorityCtx, {
       type: 'bar',
       data: {
         labels: Object.keys(analytics.priority_distribution).map(p => p.toUpperCase()),
