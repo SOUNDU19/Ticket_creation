@@ -1,51 +1,61 @@
 // Profile Page Logic
-(function() {
-  'use strict';
+'use strict';
 
-  // Protect page
-  if (!authUtils.protectPage()) {
-    throw new Error('Unauthorized');
+// Protect page
+if (!authUtils.protectPage()) {
+  throw new Error('Unauthorized');
+}
+
+let currentProfile = null;
+
+// Setup event listeners when DOM is ready
+function setupEventListeners() {
+  // Profile form
+  const profileForm = document.getElementById('profileForm');
+  if (profileForm) {
+    profileForm.addEventListener('submit', handleProfileUpdate);
   }
-
-  let currentProfile = null;
-
-  // Load profile on page load
-  document.addEventListener('DOMContentLoaded', () => {
-    loadProfile();
-    loadProfileStats();
-    setupEventListeners();
-  });
-
-  // Setup event listeners
-  function setupEventListeners() {
-    // Profile form
-    document.getElementById('profileForm').addEventListener('submit', handleProfileUpdate);
-    
-    // Password form
-    document.getElementById('passwordForm').addEventListener('submit', handlePasswordChange);
-    
-    // Delete form
-    document.getElementById('deleteForm').addEventListener('submit', handleAccountDelete);
-    
-    // Avatar upload
-    document.getElementById('avatarInput').addEventListener('change', handleAvatarUpload);
-    
-    // Password strength indicator
-    document.getElementById('newPassword').addEventListener('input', updatePasswordStrength);
-    
-    // Notification toggles - auto-save on change
-    const toggles = ['emailNotifications', 'ticketStatusUpdates', 'criticalAlerts', 'weeklySummary', 'aiInsightUpdates'];
-    toggles.forEach(id => {
-      document.getElementById(id).addEventListener('change', () => {
+  
+  // Password form
+  const passwordForm = document.getElementById('passwordForm');
+  if (passwordForm) {
+    passwordForm.addEventListener('submit', handlePasswordChange);
+  }
+  
+  // Delete form
+  const deleteForm = document.getElementById('deleteForm');
+  if (deleteForm) {
+    deleteForm.addEventListener('submit', handleAccountDelete);
+  }
+  
+  // Avatar upload
+  const avatarInput = document.getElementById('avatarInput');
+  if (avatarInput) {
+    avatarInput.addEventListener('change', handleAvatarUpload);
+  }
+  
+  // Password strength indicator
+  const newPassword = document.getElementById('newPassword');
+  if (newPassword) {
+    newPassword.addEventListener('input', updatePasswordStrength);
+  }
+  
+  // Notification toggles - auto-save on change
+  const toggles = ['emailNotifications', 'ticketStatusUpdates', 'criticalAlerts', 'weeklySummary', 'aiInsightUpdates'];
+  toggles.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.addEventListener('change', () => {
         // Auto-save after a short delay
         clearTimeout(window.notificationSaveTimeout);
         window.notificationSaveTimeout = setTimeout(saveNotifications, 500);
       });
-    });
-  }
+    }
+  });
+}
 
-  // Load profile data
-  async function loadProfile() {
+// Load profile data
+async function loadProfile() {
     try {
       const response = await api.getProfile();
       currentProfile = response.profile;
@@ -275,8 +285,8 @@
     return { percent: strength, color: '#10b981', label: 'Strong' };
   }
 
-  // Save notification preferences
-  window.saveNotifications = async function() {
+// Save notification preferences
+window.saveNotifications = async function() {
     try {
       const data = {
         email_notifications: document.getElementById('emailNotifications').checked,
@@ -294,8 +304,8 @@
     }
   };
 
-  // Deactivate account
-  window.deactivateAccount = async function() {
+// Deactivate account
+window.deactivateAccount = async function() {
     if (!confirm('Are you sure you want to deactivate your account? You can reactivate it by logging in again.')) {
       return;
     }
@@ -313,13 +323,13 @@
     }
   };
 
-  // Show delete modal
-  window.showDeleteModal = function() {
+// Show delete modal
+window.showDeleteModal = function() {
     document.getElementById('deleteModal').classList.add('active');
   };
 
-  // Close delete modal
-  window.closeDeleteModal = function() {
+// Close delete modal
+window.closeDeleteModal = function() {
     document.getElementById('deleteModal').classList.remove('active');
     document.getElementById('deleteForm').reset();
   };
@@ -402,4 +412,16 @@
   `;
   document.head.appendChild(style);
 
-})();
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initProfile);
+} else {
+  initProfile();
+}
+
+function initProfile() {
+  console.log('Initializing profile page...');
+  setupEventListeners();
+  loadProfile();
+  loadProfileStats();
+}
