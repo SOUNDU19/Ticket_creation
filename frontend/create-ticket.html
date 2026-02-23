@@ -4,7 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Create Ticket - NexoraAI</title>
-  <link rel="stylesheet" href="css/style.css">`n  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    /* Ticket Creation Grid */
+    .ticket-creation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    
+    /* Responsive: Stack on mobile */
+    @media (max-width: 768px) {
+      .ticket-creation-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Navbar -->
@@ -44,10 +61,11 @@
     <p style="color: rgba(255,255,255,0.7); margin-bottom: 2rem;">Describe your issue naturally - our AI will analyze, categorize, and structure your ticket automatically</p>
 
     <!-- Two Column Layout: Form Left, AI Analysis Right -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+    <div class="ticket-creation-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
       
       <!-- LEFT: Ticket Form -->
       <div class="glass-container" style="position: relative;">
+        <h2 style="margin-bottom: 1.5rem;">Ticket Details</h2>
         <form id="ticketForm">
           <div class="form-group">
             <label class="form-label">Ticket Title *</label>
