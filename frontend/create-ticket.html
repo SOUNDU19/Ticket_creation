@@ -69,23 +69,10 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Department</label>
-            <select class="form-input" id="department">
-              <option value="">Select department (optional)</option>
-              <option value="technical">Technical Support</option>
-              <option value="billing">Billing & Payments</option>
-              <option value="account">Account Management</option>
-              <option value="fraud">Fraud & Security</option>
-              <option value="general">General Inquiry</option>
-            </select>
-          </div>
-
 
 
           <!-- Advanced Options -->
-          <div class="advanced-options">
-            <button type="button" class="advanced-toggle" id="advancedToggle">
+          <button type="button" class="advanced-toggle" id="advancedToggle">
               <span>Advanced Options</span>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polyline points="6 9 12 15 18 9"></polyline>
@@ -519,7 +506,6 @@
           category: aiPrediction.category,
           priority: manualPriority || aiPrediction.priority,
           confidence: aiPrediction.confidence,
-          department: document.getElementById('department').value,
           tags: document.getElementById('customTags').value
         });
 

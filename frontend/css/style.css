@@ -184,6 +184,9 @@ body::after {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: visible;
+  min-width: fit-content;
 }
 
 .nav-links {

@@ -81,17 +81,57 @@ def preprocess_text(text):
     return ' '.join(tokens)
 
 def extract_entities(text):
-    """Extract named entities using pattern matching"""
+    """Extract named entities using enhanced pattern matching"""
     entities = {
-        'persons': [],
-        'software': [],
-        'error_codes': []
+        'emails': [],
+        'phone_numbers': [],
+        'error_codes': [],
+        'urls': [],
+        'amounts': [],
+        'dates': []
     }
     
-    # Extract error codes (pattern matching)
-    error_pattern = r'\b[A-Z]{2,}\s?\d{3,}\b|\berror\s?\d+\b'
-    error_codes = re.findall(error_pattern, text, re.IGNORECASE)
+    # Extract emails
+    email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    entities['emails'] = list(set(re.findall(email_pattern, text)))
+    
+    # Extract phone numbers
+    phone_pattern = r'\+?\d{1,3}[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}'
+    entities['phone_numbers'] = list(set(re.findall(phone_pattern, text)))
+    
+    # Extract error codes (various patterns)
+    error_patterns = [
+        r'\b[A-Z]{2,}\s?-?\s?\d{3,}\b',  # ERR-500, ERROR500
+        r'\berror\s?\d+\b',  # error 404
+        r'\b\d{3}\s?error\b',  # 500 error
+        r'\bcode\s?\d+\b'  # code 123
+    ]
+    error_codes = []
+    for pattern in error_patterns:
+        error_codes.extend(re.findall(pattern, text, re.IGNORECASE))
     entities['error_codes'] = list(set(error_codes))
+    
+    # Extract URLs
+    url_pattern = r'https?://[^\s<>"{}|\\^`\[\]]+'
+    entities['urls'] = list(set(re.findall(url_pattern, text)))
+    
+    # Extract monetary amounts
+    amount_pattern = r'\$\s?\d+(?:,\d{3})*(?:\.\d{2})?|\d+(?:,\d{3})*(?:\.\d{2})?\s?(?:dollars?|USD|EUR|GBP)'
+    entities['amounts'] = list(set(re.findall(amount_pattern, text, re.IGNORECASE)))
+    
+    # Extract dates (simple patterns)
+    date_patterns = [
+        r'\d{1,2}[/-]\d{1,2}[/-]\d{2,4}',  # 12/31/2024
+        r'\d{4}[/-]\d{1,2}[/-]\d{1,2}',  # 2024-12-31
+        r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+\d{1,2},?\s+\d{4}'  # January 1, 2024
+    ]
+    dates = []
+    for pattern in date_patterns:
+        dates.extend(re.findall(pattern, text, re.IGNORECASE))
+    entities['dates'] = list(set(dates))
+    
+    # Remove empty lists
+    entities = {k: v for k, v in entities.items() if v}
     
     return entities
 
@@ -230,11 +270,7 @@ def predict_ticket(description):
             'category': 'General Inquiry',
             'priority': 'medium',
             'confidence': 0.50,
-            'entities': {
-                'persons': [],
-                'software': [],
-                'error_codes': []
-            }
+            'entities': {}
         }
 
 # Initialize models on import
