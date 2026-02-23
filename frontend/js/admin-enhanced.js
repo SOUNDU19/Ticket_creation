@@ -425,7 +425,6 @@ async function loadTicketDetails(ticketId) {
         <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
           <button class="btn btn-primary" onclick="overrideCategory('${ticket.id}')">Override Category</button>
           <button class="btn btn-primary" onclick="assignTicket('${ticket.id}')">Assign Ticket</button>
-          <button class="btn btn-secondary" onclick="mergeTicket('${ticket.id}')">Merge Ticket</button>
         </div>
       </div>
     `;
@@ -559,8 +558,6 @@ async function loadUserContext(ticketId) {
         <div style="display: grid; gap: 1rem; margin-bottom: 2rem;">
           <div><strong>Name:</strong> ${data.user.name}</div>
           <div><strong>Email:</strong> ${data.user.email}</div>
-          <div><strong>Company:</strong> ${data.user.company || 'N/A'}</div>
-          <div><strong>Department:</strong> ${data.user.department || 'N/A'}</div>
           <div><strong>Account Created:</strong> ${new Date(data.user.created_at).toLocaleDateString()}</div>
           <div><strong>Last Login:</strong> ${data.user.last_login ? new Date(data.user.last_login).toLocaleString() : 'Never'}</div>
         </div>
@@ -584,10 +581,6 @@ async function loadUserContext(ticketId) {
             <div style="font-size: 0.875rem; color: rgba(255, 255, 255, 0.7);">Avg AI Confidence</div>
           </div>
         </div>
-        
-        <button class="btn btn-primary" style="margin-top: 1.5rem;" onclick="impersonateUser('${data.user.id}')">
-          👤 Impersonate User
-        </button>
       </div>
     `;
   } catch (error) {
@@ -642,35 +635,6 @@ async function assignTicket(ticketId) {
     }
   } catch (error) {
     showToast('Failed to assign ticket', 'error');
-  }
-}
-
-async function mergeTicket(sourceTicketId) {
-  const targetTicketId = prompt('Enter target ticket ID to merge into:');
-  if (!targetTicketId) return;
-  
-  if (!confirm(`Merge ticket #${sourceTicketId.substring(0, 8)} into #${targetTicketId.substring(0, 8)}?`)) return;
-  
-  try {
-    const response = await fetch(`${API_BASE_URL}/admin/ticket/${sourceTicketId}/merge`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authUtils.getToken()}`
-      },
-      body: JSON.stringify({ target_ticket_id: targetTicketId })
-    });
-    
-    if (response.ok) {
-      closeTicketModal();
-      loadTickets();
-      showToast('Tickets merged successfully', 'success');
-    } else {
-      const data = await response.json();
-      showToast(data.error || 'Failed to merge tickets', 'error');
-    }
-  } catch (error) {
-    showToast('Failed to merge tickets', 'error');
   }
 }
 
@@ -738,39 +702,6 @@ async function updateTicketStatus(ticketId) {
   }
 }
 
-async function impersonateUser(userId) {
-  if (!confirm('Start impersonation mode for this user?')) return;
-  
-  try {
-    const response = await fetch(`${API_BASE_URL}/admin/impersonate/${userId}`, {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${authUtils.getToken()}` }
-    });
-    
-    const data = await response.json();
-    
-    if (response.ok) {
-      // Store impersonation token
-      localStorage.setItem('impersonation_token', data.impersonation_token);
-      localStorage.setItem('impersonated_user', JSON.stringify(data.user));
-      
-      // Show banner and redirect
-      showToast('Impersonation started', 'success');
-      window.location.href = 'dashboard.html';
-    } else {
-      showToast(data.error || 'Failed to start impersonation', 'error');
-    }
-  } catch (error) {
-    showToast('Failed to start impersonation', 'error');
-  }
-}
-
-function exitImpersonation() {
-  localStorage.removeItem('impersonation_token');
-  localStorage.removeItem('impersonated_user');
-  window.location.reload();
-}
-
 // Load Users
 async function loadUsers() {
   try {
@@ -784,7 +715,6 @@ async function loadUsers() {
       <tr>
         <td style="font-weight: 600;">${user.name}</td>
         <td>${user.email}</td>
-        <td>${user.company || 'N/A'}</td>
         <td>${user.ticket_count} (${user.open_tickets} open)</td>
         <td><span class="badge badge-${user.is_active ? 'success' : 'danger'}">${user.is_active ? 'Active' : 'Inactive'}</span></td>
         <td>
