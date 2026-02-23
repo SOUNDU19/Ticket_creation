@@ -269,7 +269,7 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeReviewModal()">Edit</button>
-        <button class="btn btn-primary" onclick="confirmCreate()">
+        <button class="btn btn-primary" onclick="confirmCreate(event)">
           <span>Confirm & Create</span>
         </button>
       </div>
@@ -512,34 +512,46 @@
     };
 
     // Confirm and create ticket
-    window.confirmCreate = async function() {
+    window.confirmCreate = async function(event) {
       const title = document.getElementById('title').value.trim();
       const description = document.getElementById('description').value.trim();
       const manualPriority = document.getElementById('manualPriority').value;
 
-      const confirmBtn = event.target;
+      // Get the button that was clicked
+      const confirmBtn = event ? event.target : document.querySelector('.modal-footer .btn-primary');
       confirmBtn.disabled = true;
+      const originalHTML = confirmBtn.innerHTML;
       confirmBtn.innerHTML = '<span class="btn-spinner"></span><span>Creating...</span>';
 
       try {
-        await api.createTicket({
+        const ticketData = {
           title,
           description,
           category: aiPrediction.category,
           priority: manualPriority || aiPrediction.priority,
           confidence: aiPrediction.confidence,
           tags: document.getElementById('customTags').value
-        });
+        };
+
+        console.log('Creating ticket with data:', ticketData);
+
+        const response = await api.createTicket(ticketData);
+
+        console.log('Ticket created successfully:', response);
 
         showToast('Ticket created successfully!', 'success');
+
+        // Close modal
+        document.getElementById('reviewModal').classList.remove('active');
 
         setTimeout(() => {
           window.location.href = 'history.html';
         }, 1000);
       } catch (error) {
+        console.error('Failed to create ticket:', error);
         showToast('Failed to create ticket: ' + error.message, 'error');
         confirmBtn.disabled = false;
-        confirmBtn.innerHTML = '<span>Confirm & Create</span>';
+        confirmBtn.innerHTML = originalHTML;
       }
     };
   </script>
