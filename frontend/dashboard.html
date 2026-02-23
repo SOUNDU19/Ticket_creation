@@ -294,9 +294,6 @@
       max-width: 1400px;
       margin: 2rem auto;
       padding: 0 2rem;
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 2rem;
     }
 
     /* Recent Tickets Table */
@@ -367,34 +364,6 @@
       font-size: 0.875rem;
       color: rgba(255, 255, 255, 0.5);
       margin-top: 0.5rem;
-    }
-
-    /* AI Insights Panel */
-    .insights-panel {
-      background: rgba(31, 31, 31, 0.6);
-      backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 2rem;
-    }
-
-    .insight-item {
-      padding: 1rem;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 12px;
-      margin-bottom: 1rem;
-    }
-
-    .insight-label {
-      font-size: 0.875rem;
-      color: rgba(255, 255, 255, 0.6);
-      margin-bottom: 0.5rem;
-    }
-
-    .insight-value {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #ffffff;
     }
 
     /* Quick Actions */
@@ -560,29 +529,6 @@
         <div class="spinner"></div>
       </div>
     </div>
-
-    <!-- AI Insights Panel -->
-    <div class="insights-panel">
-      <div class="panel-header">
-        <h2 class="panel-title">AI Insights</h2>
-      </div>
-      <div class="insight-item">
-        <div class="insight-label">Most Common Category</div>
-        <div class="insight-value" id="commonCategory">Loading...</div>
-      </div>
-      <div class="insight-item">
-        <div class="insight-label">Average AI Confidence</div>
-        <div class="insight-value" id="avgConfidence">Loading...</div>
-      </div>
-      <div class="insight-item">
-        <div class="insight-label">Avg Response Time</div>
-        <div class="insight-value" id="avgResponse">Loading...</div>
-      </div>
-      <div class="insight-item">
-        <div class="insight-label">AI Suggestions</div>
-        <div class="insight-value" style="font-size: 0.95rem;" id="aiSuggestions">Loading...</div>
-      </div>
-    </div>
   </section>
 
   <!-- Quick Actions -->
@@ -740,22 +686,6 @@
             `;
           }).join('');
         }
-
-        // AI Insights - simplified without analytics API
-        const categories = {};
-        tickets.tickets?.forEach(t => {
-          categories[t.category] = (categories[t.category] || 0) + 1;
-        });
-        const topCategory = Object.keys(categories).length > 0 
-          ? Object.keys(categories).reduce((a, b) => categories[a] > categories[b] ? a : b, 'N/A')
-          : 'N/A';
-        
-        document.getElementById('commonCategory').textContent = topCategory;
-        document.getElementById('avgConfidence').textContent = '94.5%';
-        document.getElementById('avgResponse').textContent = '< 2 hours';
-        document.getElementById('aiSuggestions').textContent = stats.total > 5 ? 
-          'Consider creating ticket templates for common issues' : 
-          'System learning from your tickets';
 
       } catch (error) {
         console.error('Dashboard load error:', error);

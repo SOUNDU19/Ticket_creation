@@ -41,7 +41,7 @@ function setupEventListeners() {
   }
   
   // Notification toggles - auto-save on change
-  const toggles = ['emailNotifications', 'ticketStatusUpdates', 'criticalAlerts', 'aiInsightUpdates'];
+  const toggles = ['emailNotifications', 'ticketStatusUpdates', 'criticalAlerts'];
   toggles.forEach(id => {
     const element = document.getElementById(id);
     if (element) {
@@ -95,7 +95,6 @@ async function loadProfile() {
         document.getElementById('emailNotifications').checked = settings.email_notifications;
         document.getElementById('ticketStatusUpdates').checked = settings.ticket_status_updates;
         document.getElementById('criticalAlerts').checked = settings.critical_alerts;
-        document.getElementById('aiInsightUpdates').checked = settings.ai_insight_updates;
       }
       
     } catch (error) {
@@ -292,7 +291,7 @@ window.saveNotifications = async function() {
         ticket_status_updates: document.getElementById('ticketStatusUpdates').checked,
         critical_alerts: document.getElementById('criticalAlerts').checked,
   
-        ai_insight_updates: document.getElementById('aiInsightUpdates').checked
+  
       };
       
       await api.updateNotifications(data);
