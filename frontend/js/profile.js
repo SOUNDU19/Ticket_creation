@@ -98,8 +98,8 @@ async function loadProfile() {
       }
       
     } catch (error) {
-      showToast('Failed to load profile', 'error');
-      console.error(error);
+      console.error('Error loading profile:', error);
+      // Silently fail - user can still use the page
     }
   }
 
