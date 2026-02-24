@@ -651,18 +651,7 @@ tbody tr:hover {
 }
 
 /* Toast Notification - Removed duplicate, see enhanced version below */
-
-.toast.success {
-  border-left: 3px solid var(--success);
-}
-
-.toast.error {
-  border-left: 3px solid var(--danger);
-}
-
-.toast.warning {
-  border-left: 3px solid var(--warning);
-}
+/* Toast Notification - See enhanced version at end of file */
 
 /* Loading Spinner */
 .spinner {
@@ -3113,6 +3102,7 @@ section > p {
   right: 2rem;
   min-width: 300px;
   max-width: 450px;
+  width: auto;
   padding: 1rem 1.5rem;
   background: rgba(31, 31, 31, 0.95);
   backdrop-filter: blur(20px);
@@ -3125,6 +3115,8 @@ section > p {
   align-items: center;
   gap: 0.75rem;
   word-wrap: break-word;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 @keyframes toastSlideIn {
@@ -3148,6 +3140,17 @@ section > p {
 
 .toast.warning {
   border-left: 4px solid var(--warning);
+}
+
+/* Toast responsive */
+@media (max-width: 768px) {
+  .toast {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    min-width: auto;
+    max-width: none;
+  }
 }
 
 /* Footer */
