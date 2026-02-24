@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Analytics - NexoraAI</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">NexoraAI</div>
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="create-ticket.html">Create Ticket</a></li>
+        <li><a href="history.htmlt.html">Create Ticket</a></li>
+        <li><a href="history.html">History</a></li>
+        <li><a href="analytics.html">Analytics</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="#" onclick="authUtils.logout()" class="btn btn-secondary">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container" style="max-width: 1400px;">
+    <!-- Header -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+      <div>
+        <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">My Ticket Analytics</h1>
+        <p style="color: rgba(255,255,255,0.7);">Insights and trends from your support activity</p>
+      </div>
+      <div>
+        <select class="form-input" id="dateFilter" style="width: 200px;">
+          <option value="7">Last 7 Days</option>
+          <option value="30" selected>Last 30 Days</option>
+          <option value="90">Last 90 Days</option>
+          <option value="365">This Year</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Overview Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Total Tickets</div>
+          <div class="stat-value" id="statTotal">0</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Open Tickets</div>
+          <div class="stat-value" id="statOpen">0</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">In Progress</div>
+          <div class="stat-value" id="statInProgress">0</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">Closed Tickets</div>
+          <div class="stat-value" id="statClosed">0</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #fa709a, #fee140);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">High Priority</div>
+          <div class="stat-value" id="statHighPriority">0</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">AI Confidence</div>
+          <div class="stat-value" id="statConfidence">0%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 2rem;">
+      <!-- Activity Chart -->
+      <div class="glass-container" style="grid-column: 1 / -1;">
+        <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem;">Tickets Created Over Time</h3>
+        <canvas id="activityChart" height="80"></canvas>
+      </div>
+
+      <!-- Category Distribution -->
+      <div class="glass-container">
+        <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem;">Issue Category Breakdown</h3>
+        <canvas id="categoryChart"></canvas>
+      </div>
+
+      <!-- Priority Distribution -->
+      <div class="glass-container">
+        <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem;">Priority Breakdown</h3>
+        <canvas id="priorityChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Insights Grid -->
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 2rem;">
+      <!-- AI Insights -->
+      <div class="glass-container">
+        <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.5rem;">🤖</span>
+          AI Insights
+        </h3>
+        <div class="insight-item">
+          <div class="insight-label">Average AI Confidence</div>
+          <div class="insight-value">
+            <span id="aiConfidence">0%</span>
+            <div class="confidence-bar-small">
+              <div class="confidence-fill" id="aiConfidenceBar"></div>
+            </div>
+          </div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-label">Low Confidence Tickets</div>
+          <div class="insight-value" id="lowConfidenceCount">0</div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-label">Most Common Category</div>
+          <div class="insight-value">
+            <span class="category-badge-small" id="commonCategory">N/A</span>
+          </div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-label">Confidence Trend</div>
+          <div class="insight-value">
+            <span class="trend-badge" id="confidenceTrend">Stable</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resolution Insights -->
+      <div class="glass-container">
+        <h3 style="font-size: 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.5rem;">⏱️</span>
+          Resolution Insights
+        </h3>
+        <div class="insight-item">
+          <div class="insight-label">Average Resolution Time</div>
+          <div class="insight-value" id="avgResolution">0h</div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-label">Fastest Resolution</div>
+          <div class="insight-value" id="fastestResolution">0h</div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-label">Longest Open Ticket</div>
+          <div class="insight-value" id="longestOpen">0h</div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-label">SLA Met Rate</div>
+          <div class="insight-value">
+            <span id="slaRate">0%</span>
+            <div class="sla-bar">
+              <div class="sla-fill" id="slaBar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly Summary -->
+    <div class="glass-container" style="margin-top: 2rem;">
+      <h3 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Your Monthly Summary</h3>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;">
+        <div class="summary-item">
+          <div class="summary-label">Tickets Created</div>
+          <div class="summary-value" id="monthlyCreated">0</div>
+          <div class="summary-change" id="monthlyCreatedChange">0%</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Tickets Resolved</div>
+          <div class="summary-value" id="monthlyResolved">0</div>
+          <div class="summary-change" id="monthlyResolvedChange">0%</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Critical Tickets</div>
+          <div class="summary-value" id="monthlyCritical">0</div>
+          <div class="summary-change" id="monthlyCriticalChange">0%</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-label">Avg Confidence</div>
+          <div class="summary-value" id="monthlyConfidence">0%</div>
+          <div class="summary-change" id="monthlyConfidenceChange">0%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p class="footer-credit">Designed & Developed by Soundarya</p>
+  </footer>
+
+  <script src="js/particles.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/analytics.js"></script>
+</body>
+</html>

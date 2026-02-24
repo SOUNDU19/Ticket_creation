@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Ticket - NexoraAI</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">NexoraAI</div>
+      <ul class="nav-links">
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="create-ticket.html">Create Ticket</a></li>
+        <li><a href="history.html" class="active">History</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="#" onclick="authUtils.logout()" class="btn btn-secondary">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <div class="container" style="max-width: 1200px;">
+      <!-- Loading State -->
+      <div id="loadingState" class="glass-container" style="text-align: center; padding: 3rem;">
+        <div class="loading-spinner" style="margin: 0 auto 1rem;"></div>
+        <p>Loading ticket details...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="errorState" class="glass-container" style="display: none; text-align: center; padding: 3rem;">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">⚠️</div>
+        <h2 style="margin-bottom: 1rem;">Ticket Not Found</h2>
+        <p style="color: rgba(255,255,255,0.7); margin-bottom: 2rem;">The ticket you're looking for doesn't exist or you don't have permission to view it.</p>
+        <a href="history.html" class="btn btn-primary">Back to History</a>
+      </div>
+
+      <!-- Ticket Details -->
+      <div id="ticketDetails" style="display: none;">
+        <div class="page-header" style="margin-bottom: 2rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div>
+              <a href="history.html" style="color: rgba(255,255,255,0.6); text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                ← Back to History
+              </a>
+              <h1 class="page-title" id="ticketTitle" style="margin: 0;">Ticket Details</h1>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <span class="status-badge" id="ticketStatus"></span>
+              <span class="priority-badge" id="ticketPriority"></span>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+          <!-- Main Content -->
+          <div>
+            <div class="glass-container" style="margin-bottom: 2rem;">
+              <h2 style="font-size: 1.5rem; margin-bottom: 1rem;" id="ticketTitleFull"></h2>
+              
+              <div style="display: flex; gap: 2rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <div>
+                  <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 0.25rem;">Category</div>
+                  <span class="category-badge" id="ticketCategory"></span>
+                </div>
+                <div>
+                  <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 0.25rem;">Created</div>
+                  <div id="ticketCreated"></div>
+                </div>
+                <div>
+                  <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 0.25rem;">Updated</div>
+                  <div id="ticketUpdated"></div>
+                </div>
+              </div>
+
+              <div>
+                <h3 style="font-size: 1.125rem; margin-bottom: 1rem;">Description</h3>
+                <p id="ticketDescription" style="line-height: 1.8; color: rgba(255,255,255,0.8);"></p>
+              </div>
+            </div>
+
+            <!-- AI Analysis -->
+            <div class="glass-container" id="aiAnalysisSection" style="display: none;">
+              <h3 style="font-size: 1.125rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                <span>🤖</span> AI Analysis
+              </h3>
+              <div style="display: grid; gap: 1rem;">
+                <div>
+                  <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem;">Confidence Score</div>
+                  <div class="confidence-container">
+                    <div class="confidence-bar-bg">
+                      <div class="confidence-bar" id="confidenceBar"></div>
+                    </div>
+                    <span class="confidence-text" id="confidenceText">0%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sidebar -->
+          <div>
+            <div class="glass-container">
+              <h3 style="font-size: 1.125rem; margin-bottom: 1.5rem;">Ticket Information</h3>
+              
+              <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div>
+                  <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem;">Ticket ID</div>
+                  <div style="font-family: monospace; font-size: 0.95rem;" id="ticketId"></div>
+                </div>
+
+                <div>
+                  <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem;">Status</div>
+                  <select class="form-input" id="statusSelect" style="font-size: 0.95rem;">
+                    <option value="open">Open</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="closed">Closed</option>
+                  </select>
+                  <button class="btn btn-primary" id="updateStatusBtn" style="width: 100%; margin-top: 0.75rem;">
+                    Update Status
+                  </button>
+                </div>
+
+                <div>
+                  <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem;">Priority</div>
+                  <span class="priority-badge" id="ticketPrioritySidebar"></span>
+                </div>
+
+                <div>
+                  <div style="font-size: 0.875rem; color: rgba(255,255,255,0.6); margin-bottom: 0.5rem;">Category</div>
+                  <span class="category-badge" id="ticketCategorySidebar"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p class="footer-credit">© 2026 NexoraAI - Built with AI</p>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script>
+    // Protect page
+    if (!authUtils.protectPage()) {
+      throw new Error('Unauthorized');
+    }
+
+    let currentTicket = null;
+
+    // Get ticket ID from URL
+    function getTicketIdFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('id');
+    }
+
+    // Format date
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    // Load ticket details
+    async function loadTicket() {
+      const ticketId = getTicketIdFromURL();
+      
+      if (!ticketId) {
+        showError();
+        return;
+      }
+
+      try {
+        const response = await api.getTicket(ticketId);
+        currentTicket = response.ticket;
+        
+        // Hide loading, show ticket
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('ticketDetails').style.display = 'block';
+        
+        // Populate ticket details
+        document.getElementById('ticketTitle').textContent = `Ticket #${currentTicket.id}`;
+        document.getElementById('ticketTitleFull').textContent = currentTicket.title;
+        document.getElementById('ticketDescription').textContent = currentTicket.description;
+        document.getElementById('ticketId').textContent = `#${currentTicket.id}`;
+        document.getElementById('ticketCreated').textContent = formatDate(currentTicket.created_at);
+        document.getElementById('ticketUpdated').textContent = formatDate(currentTicket.updated_at);
+        
+        // Status
+        const statusBadge = document.getElementById('ticketStatus');
+        statusBadge.textContent = currentTicket.status.replace('_', ' ').toUpperCase();
+        statusBadge.className = `status-badge status-${currentTicket.status}`;
+        document.getElementById('statusSelect').value = currentTicket.status;
+        
+        // Priority
+        const priorityBadges = document.querySelectorAll('#ticketPriority, #ticketPrioritySidebar');
+        priorityBadges.forEach(badge => {
+          badge.textContent = currentTicket.priority.toUpperCase();
+          badge.className = `priority-badge priority-${currentTicket.priority}`;
+        });
+        
+        // Category
+        const categoryBadges = document.querySelectorAll('#ticketCategory, #ticketCategorySidebar');
+        categoryBadges.forEach(badge => {
+          badge.textContent = currentTicket.category;
+          badge.className = 'category-badge';
+        });
+        
+        // AI Analysis
+        if (currentTicket.ai_confidence) {
+          document.getElementById('aiAnalysisSection').style.display = 'block';
+          const confidencePercent = Math.round(currentTicket.ai_confidence * 100);
+          const confidenceBar = document.getElementById('confidenceBar');
+          const confidenceText = document.getElementById('confidenceText');
+          
+          setTimeout(() => {
+            confidenceBar.style.width = confidencePercent + '%';
+            confidenceText.textContent = confidencePercent + '%';
+            
+            if (confidencePercent >= 85) {
+              confidenceBar.style.background = 'linear-gradient(90deg, #10b981, #059669)';
+            } else if (confidencePercent >= 60) {
+              confidenceBar.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
+            } else {
+              confidenceBar.style.background = 'linear-gradient(90deg, #ef4444, #dc2626)';
+            }
+          }, 100);
+        }
+        
+      } catch (error) {
+        console.error('Error loading ticket:', error);
+        showError();
+      }
+    }
+
+    // Show error state
+    function showError() {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorState').style.display = 'block';
+    }
+
+    // Update ticket status
+    document.getElementById('updateStatusBtn').addEventListener('click', async () => {
+      const newStatus = document.getElementById('statusSelect').value;
+      const btn = document.getElementById('updateStatusBtn');
+      
+      btn.disabled = true;
+      btn.textContent = 'Updating...';
+      
+      try {
+        await api.updateTicket({
+          ticket_id: currentTicket.id,
+          status: newStatus
+        });
+        
+        showToast('Ticket status updated successfully', 'success');
+        
+        // Update UI
+        currentTicket.status = newStatus;
+        const statusBadge = document.getElementById('ticketStatus');
+        statusBadge.textContent = newStatus.replace('_', ' ').toUpperCase();
+        statusBadge.className = `status-badge status-${newStatus}`;
+        
+      } catch (error) {
+        showToast('Failed to update ticket status: ' + error.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Update Status';
+      }
+    });
+
+    // Load ticket on page load
+    loadTicket();
+  </script>
+</body>
+</html>

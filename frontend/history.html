@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ticket History - NexoraAI</title>
-  <link rel="stylesheet" href="css/style.css">`n  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
   <nav class="navbar">
@@ -113,13 +114,13 @@
           tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: rgba(255,255,255,0.5);">No tickets found</td></tr>';
         } else {
           tbody.innerHTML = response.tickets.map(ticket => `
-            <tr style="cursor: pointer;" onclick="window.location.href='ticket-details.html?id=${ticket.id}'">
+            <tr style="cursor: pointer;" onclick="window.location.href='view-ticket.html?id=${ticket.id}'">
               <td style="font-weight: 600;">${ticket.title}</td>
               <td>${ticket.category}</td>
               <td><span class="badge badge-${ticket.priority === 'critical' ? 'danger' : ticket.priority === 'high' ? 'danger' : ticket.priority === 'medium' ? 'warning' : 'success'}">${ticket.priority.toUpperCase()}</span></td>
               <td><span class="badge badge-${ticket.status === 'open' ? 'primary' : ticket.status === 'in_progress' ? 'warning' : 'success'}">${ticket.status.replace('_', ' ').toUpperCase()}</span></td>
               <td>${new Date(ticket.created_at).toLocaleDateString()}</td>
-              <td><button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">View</button></td>
+              <td><button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;" onclick="event.stopPropagation();">View</button></td>
             </tr>
           `).join('');
         }

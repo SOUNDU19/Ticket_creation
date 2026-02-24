@@ -4,6 +4,12 @@
 
 A production-ready AI-powered ticket automation system with premium SaaS UI and enterprise architecture.
 
+## 🚀 Live Demo
+
+- **Frontend**: https://ticket-creation-rho.vercel.app/landing.html
+- **Backend API**: https://ticket-creation-6.onrender.com/api
+- **Admin Login**: admin@nexora.ai / admin123
+
 ## Features
 
 - 🤖 AI-powered ticket categorization (>95% accuracy)
@@ -95,7 +101,7 @@ python -m http.server 8000
 npx serve frontend
 ```
 
-Frontend will be available at `http://localhost:8000`
+Frontend will be available at `http://run itlocalhost:8000`
 
 ## Project Structure
 
