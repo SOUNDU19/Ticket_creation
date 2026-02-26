@@ -103,54 +103,69 @@ npx serve frontend
 
 Frontend will be available at `http://run itlocalhost:8000`
 
-## Project Structure
+## 📁 Project Structure
 
 ```
-nexora-ai/
-├── frontend/
-│   ├── index.html
-│   ├── login.html
-│   ├── signup.html
-│   ├── dashboard.html
-│   ├── create-ticket.html
-│   ├── history.html
-│   ├── profile.html
-│   ├── admin.html
-│   ├── analytics.html
-│   ├── settings.html
-│   ├── about.html
-│   ├── documentation.html
-│   ├── 404.html
-│   ├── css/
-│   │   └── style.css
-│   └── js/
-│       ├── config.js
-│       ├── auth.js
-│       ├── api.js
-│       └── [page-specific].js
-├── backend/
-│   ├── app.py
-│   ├── config.py
-│   ├── requirements.txt
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── user.py
-│   │   └── ticket.py
-│   ├── routes/
-│   │   ├── __init__.py
-│   │   ├── auth.py
-│   │   ├── tickets.py
-│   │   └── admin.py
-│   ├── ml/
-│   │   ├── train.py
-│   │   ├── predict.py
-│   │   ├── model.pkl
-│   │   └── vectorizer.pkl
-│   ├── utils/
-│   │   ├── __init__.py
-│   │   └── helpers.py
-│   └── dataset/
-└── datasets/
+NexoraAI/
+├── 📂 frontend/                    # Frontend application
+│   ├── 🏠 landing.html            # Landing page
+│   ├── 🔐 login.html              # Login page
+│   ├── 📝 signup.html             # Registration page
+│   ├── 📊 dashboard.html          # User dashboard
+│   ├── ➕ create-ticket.html      # Ticket creation (AI-powered)
+│   ├── 📜 history.html            # Ticket history
+│   ├── 👤 profile.html            # User profile
+│   ├── 🔧 admin-dashboard-enhanced.html  # Admin panel
+│   ├── 📈 analytics.html          # Analytics dashboard
+│   ├── 🎨 css/                    # Stylesheets
+│   │   ├── style.css              # Main styles
+│   │   ├── landing-styles.css     # Landing page styles
+│   │   ├── landing-animations.css # Animations
+│   │   └── responsive.css         # Mobile responsive
+│   └── 💻 js/                     # JavaScript files
+│       ├── config.js              # API configuration
+│       ├── auth.js                # Authentication logic
+│       ├── api.js                 # API calls & utilities
+│       ├── create-ticket.js       # Ticket creation logic
+│       ├── admin-enhanced.js      # Admin functionality
+│       └── profile.js             # Profile management
+│
+├── 📂 backend/                     # Backend API
+│   ├── app.py                     # Main Flask application
+│   ├── config.py                  # Configuration
+│   ├── requirements.txt           # Python dependencies
+│   ├── 📂 models/                 # Database models
+│   │   ├── user.py                # User model
+│   │   └── ticket.py              # Ticket model
+│   ├── 📂 routes/                 # API endpoints
+│   │   ├── auth.py                # Authentication routes
+│   │   ├── tickets.py             # Ticket CRUD operations
+│   │   ├── profile.py             # User profile routes
+│   │   └── admin_enhanced.py      # Admin routes
+│   ├── 📂 ml/                     # Machine Learning
+│   │   ├── train.py               # Model training script
+│   │   ├── predict.py             # Prediction logic
+│   │   ├── model.pkl              # Trained model
+│   │   └── vectorizer.pkl         # TF-IDF vectorizer
+│   └── 📂 utils/                  # Helper functions
+│       └── helpers.py             # Utility functions
+│
+├── 📂 agile_project/               # Agile Project Management
+│   ├── 📋 Product_Backlog.csv     # Product backlog
+│   ├── 📅 Sprint_Backlog.csv      # Sprint tasks
+│   ├── 🔄 Sprint_Planning_Retrospective.csv  # Sprint planning
+│   ├── 📝 Daily_Standup_Tracking.csv  # Daily standups
+│   ├── 📄 AGILE_PROJECT_TEMPLATE.md  # Agile documentation
+│   ├── 📄 EXCEL_AGILE_TEMPLATE.md    # Excel guide
+│   └── 📊 Agile_Template_v0.1.xls    # Excel template
+│
+├── 📂 dataset/                     # Training data
+│   └── customer_support_tickets.csv
+│
+├── 📄 README.md                    # Project documentation
+├── 📄 TECHNICAL_INTERVIEW_QUESTIONS.md  # Interview prep
+├── ⚙️ vercel.json                 # Vercel deployment config
+└── ⚙️ render.yaml                 # Render deployment config
 ```
 
 ## ML Model Training
@@ -217,6 +232,11 @@ Expected accuracy: >95%
 - **Backend**: Heroku, AWS, Google Cloud, DigitalOcean
 - **Frontend**: Netlify, Vercel, GitHub Pages
 - **Database**: Avian Cloud, PostgreSQL, MySQL
+
+## 📚 Documentation
+
+- **[Technical Interview Questions](TECHNICAL_INTERVIEW_QUESTIONS.md)** - 70+ interview Q&A covering ML, Backend, Database, Frontend, and more
+- **[Agile Project Documentation](agile_project/)** - Complete Agile/Scrum documentation with sprints, backlogs, and retrospectives
 
 ## Credits
 
