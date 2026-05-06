@@ -450,7 +450,7 @@
         <li id="createTicketNav"><a href="create-ticket.html">Create Ticket</a></li>
         <li id="myTicketsNav"><a href="history.html">My Tickets</a></li>
         <li id="profileNav"><a href="profile.html">Profile</a></li>
-        <li><a href="#" onclick="authUtils.logout()" class="btn btn-secondary">Logout</a></li>
+        <li><a href="landing.html" class="btn btn-secondary">Home</a></li>
       </ul>
       <div class="user-badge">
         <div class="user-avatar" id="userAvatar">U</div>
@@ -569,16 +569,12 @@
   <script src="js/auth.js"></script>
   <script src="js/api.js"></script>
   <script>
-    // Protect page
-    if (!authUtils.protectPage()) {
-      throw new Error('Unauthorized');
-    }
-
     // Display user info
     const user = authUtils.getCurrentUser();
-    document.getElementById('userName').textContent = user.name;
-    document.getElementById('userNameBadge').textContent = user.name;
-    document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+    const displayName = user ? user.name : 'Guest';
+    document.getElementById('userName').textContent = displayName;
+    document.getElementById('userNameBadge').textContent = displayName;
+    document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
 
     // Animated counter
     function animateCounter(element, target, duration = 1000) {

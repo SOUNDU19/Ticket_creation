@@ -1,19 +1,27 @@
-// Authentication utilities
+// Authentication utilities — No login required, guest mode enabled
 
-// Check if user is logged in
+// Default guest user used when no real user is logged in
+const GUEST_USER = {
+  id: 'guest',
+  name: 'Guest',
+  email: 'guest@nexoraai.com',
+  role: 'user'
+};
+
+// Check if user is logged in (always true in guest mode)
 function isLoggedIn() {
-  return localStorage.getItem('token') !== null;
+  return true;
 }
 
-// Get current user
+// Get current user — returns stored user or guest
 function getCurrentUser() {
   const userStr = localStorage.getItem('user');
-  return userStr ? JSON.parse(userStr) : null;
+  return userStr ? JSON.parse(userStr) : GUEST_USER;
 }
 
 // Get auth token
 function getToken() {
-  return localStorage.getItem('token');
+  return localStorage.getItem('token') || null;
 }
 
 // Save auth data
@@ -28,10 +36,10 @@ function clearAuthData() {
   localStorage.removeItem('user');
 }
 
-// Logout
+// Go to landing page (replaces logout)
 function logout() {
   clearAuthData();
-  window.location.href = 'login.html';
+  window.location.href = 'landing.html';
 }
 
 // Check if user is admin
@@ -40,21 +48,13 @@ function isAdmin() {
   return user && user.role === 'admin';
 }
 
-// Protect page (redirect if not logged in)
+// No longer blocks access — always returns true
 function protectPage() {
-  if (!isLoggedIn()) {
-    window.location.href = 'login.html';
-    return false;
-  }
   return true;
 }
 
-// Protect admin page
+// Admin page — still requires admin role
 function protectAdminPage() {
-  if (!isLoggedIn()) {
-    window.location.href = 'login.html';
-    return false;
-  }
   if (!isAdmin()) {
     window.location.href = 'dashboard.html';
     return false;
@@ -62,17 +62,8 @@ function protectAdminPage() {
   return true;
 }
 
-// Redirect if already logged in
-function redirectIfLoggedIn() {
-  if (isLoggedIn()) {
-    const user = getCurrentUser();
-    if (user && user.role === 'admin') {
-      window.location.href = 'admin-dashboard-enhanced.html';
-    } else {
-      window.location.href = 'dashboard.html';
-    }
-  }
-}
+// No-op — no redirect needed
+function redirectIfLoggedIn() {}
 
 // Export functions
 window.authUtils = {

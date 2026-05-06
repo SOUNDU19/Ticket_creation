@@ -4,6 +4,14 @@
   "outputDirectory": "frontend",
   "routes": [
     {
+      "src": "/",
+      "dest": "/landing.html"
+    },
+    {
+      "src": "/index.html",
+      "dest": "/landing.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/$1"
     }
