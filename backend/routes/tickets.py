@@ -40,7 +40,12 @@ def create_ticket():
             # Get or create guest user
             guest = User.query.filter_by(email='guest@nexoraai.com').first()
             if not guest:
-                guest = User(name='Guest', email='guest@nexoraai.com', role='user')
+                guest = User(
+                    name='Guest',
+                    email='guest@nexoraai.com',
+                    mobile='0000000000',
+                    role='user'
+                )
                 guest.set_password('guest_pass_internal')
                 db.session.add(guest)
                 db.session.flush()

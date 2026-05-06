@@ -9,7 +9,7 @@ class User(db.Model):
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False, index=True)
-    mobile = db.Column(db.String(20), nullable=False)
+    mobile = db.Column(db.String(20), nullable=True)
     company = db.Column(db.String(100), nullable=True)
     password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.String(20), default='user')  # user or admin
