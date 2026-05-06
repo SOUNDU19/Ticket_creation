@@ -4,14 +4,14 @@ from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 from models.user import User
 
 def token_required(f):
-    """Decorator to require JWT token"""
+    """Decorator — token optional. If present and valid, sets user identity. If absent, uses guest."""
     @wraps(f)
     def decorated(*args, **kwargs):
         try:
-            verify_jwt_in_request()
-            return f(*args, **kwargs)
-        except Exception as e:
-            return jsonify({'error': 'Invalid or expired token', 'message': str(e)}), 401
+            verify_jwt_in_request(optional=True)
+        except Exception:
+            pass  # No token is fine — guest access allowed
+        return f(*args, **kwargs)
     return decorated
 
 def admin_required(f):
