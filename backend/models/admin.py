@@ -35,20 +35,20 @@ class SystemSettings(db.Model):
     __tablename__ = 'system_settings'
 
     id = db.Column(db.Integer, primary_key=True)
-    sla_critical = db.Column(db.Integer, default=4)    # hours
-    sla_high = db.Column(db.Integer, default=8)
-    sla_medium = db.Column(db.Integer, default=24)
-    sla_low = db.Column(db.Integer, default=72)
+    sla_critical_hours = db.Column(db.Integer, default=4)
+    sla_high_hours = db.Column(db.Integer, default=8)
+    sla_medium_hours = db.Column(db.Integer, default=24)
+    sla_low_hours = db.Column(db.Integer, default=72)
     ai_confidence_threshold = db.Column(db.Float, default=0.7)
     duplicate_detection_enabled = db.Column(db.Boolean, default=True)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def to_dict(self):
         return {
-            'sla_critical': self.sla_critical,
-            'sla_high': self.sla_high,
-            'sla_medium': self.sla_medium,
-            'sla_low': self.sla_low,
+            'sla_critical': self.sla_critical_hours,
+            'sla_high': self.sla_high_hours,
+            'sla_medium': self.sla_medium_hours,
+            'sla_low': self.sla_low_hours,
             'ai_confidence_threshold': self.ai_confidence_threshold,
             'duplicate_detection_enabled': self.duplicate_detection_enabled
         }

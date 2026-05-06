@@ -121,7 +121,7 @@
               <td><span class="badge badge-${ticket.priority === 'critical' ? 'danger' : ticket.priority === 'high' ? 'danger' : ticket.priority === 'medium' ? 'warning' : 'success'}">${ticket.priority.toUpperCase()}</span></td>
               <td><span class="badge badge-${ticket.status === 'open' ? 'primary' : ticket.status === 'in_progress' ? 'warning' : 'success'}">${ticket.status.replace('_', ' ').toUpperCase()}</span></td>
               <td>${new Date(ticket.created_at).toLocaleDateString()}</td>
-              <td><button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;" onclick="event.stopPropagation();">View</button></td>
+              <td><button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.875rem;" onclick="event.stopPropagation(); window.location.href='view-ticket.html?id=${ticket.id}'">View</button></td>
             </tr>
           `).join('');
         }

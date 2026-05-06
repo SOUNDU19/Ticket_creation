@@ -168,9 +168,18 @@ def settings():
         return jsonify(s.to_dict()), 200
 
     data = request.get_json()
+    field_map = {
+        'sla_critical': 'sla_critical_hours',
+        'sla_high': 'sla_high_hours',
+        'sla_medium': 'sla_medium_hours',
+        'sla_low': 'sla_low_hours',
+        'ai_confidence_threshold': 'ai_confidence_threshold',
+        'duplicate_detection_enabled': 'duplicate_detection_enabled'
+    }
     for k, v in data.items():
-        if hasattr(s, k):
-            setattr(s, k, v)
+        attr = field_map.get(k, k)
+        if hasattr(s, attr):
+            setattr(s, attr, v)
     db.session.commit()
     return jsonify(s.to_dict()), 200
 
