@@ -25,7 +25,7 @@ def create_app(config_name='default'):
     # Initialize extensions
     CORS(app, resources={
         r"/api/*": {
-            "origins": ["*"],  # Allow all origins for now
+            "origins": ["*"],
             "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"],
             "expose_headers": ["Content-Type", "Authorization"],
@@ -34,7 +34,19 @@ def create_app(config_name='default'):
         }
     })
     JWTManager(app)
-    db.init_app(app)
+
+    # Try PostgreSQL, fall back to SQLite if connection fails
+    try:
+        db.init_app(app)
+        with app.app_context():
+            db.engine.connect()
+    except Exception as db_err:
+        print(f"⚠ Primary DB failed ({db_err}), falling back to SQLite")
+        if os.getenv('RENDER'):
+            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////opt/render/project/src/nexora.db'
+        else:
+            app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/nexora.db'
+        db.init_app(app)
     
     # Register blueprints
     app.register_blueprint(auth_bp, url_prefix='/api')
@@ -55,6 +67,49 @@ def create_app(config_name='default'):
             
             db.create_all()
             print("✓ Database tables created")
+
+            # Migration: make mobile column nullable if it isn't already
+            try:
+                import sqlite3
+                raw_db_path = db_path if db_path else 'nexora.db'
+                conn = sqlite3.connect(raw_db_path)
+                cursor = conn.cursor()
+                cursor.execute("PRAGMA table_info(users)")
+                cols = cursor.fetchall()
+                mobile_col = next((c for c in cols if c[1] == 'mobile'), None)
+                if mobile_col and mobile_col[3] == 1:  # notnull == 1
+                    # Recreate users table without NOT NULL on mobile
+                    cursor.executescript("""
+                        PRAGMA foreign_keys=off;
+                        BEGIN TRANSACTION;
+                        ALTER TABLE users RENAME TO _users_old;
+                        CREATE TABLE users (
+                            id VARCHAR(36) PRIMARY KEY,
+                            name VARCHAR(100) NOT NULL,
+                            email VARCHAR(120) UNIQUE NOT NULL,
+                            mobile VARCHAR(20),
+                            company VARCHAR(100),
+                            password_hash VARCHAR(255) NOT NULL,
+                            role VARCHAR(20) DEFAULT 'user',
+                            avatar_url VARCHAR(255),
+                            phone VARCHAR(20),
+                            department VARCHAR(100),
+                            timezone VARCHAR(50) DEFAULT 'UTC',
+                            is_active BOOLEAN DEFAULT 1,
+                            created_at TIMESTAMP,
+                            updated_at TIMESTAMP,
+                            last_login TIMESTAMP
+                        );
+                        INSERT INTO users SELECT * FROM _users_old;
+                        DROP TABLE _users_old;
+                        COMMIT;
+                        PRAGMA foreign_keys=on;
+                    """)
+                    conn.commit()
+                    print("✓ Migrated users.mobile to nullable")
+                conn.close()
+            except Exception as migration_err:
+                print(f"⚠ Migration note: {migration_err}")
             
             # Create uploads directory
             upload_dir = app.config.get('UPLOAD_FOLDER', 'uploads')
