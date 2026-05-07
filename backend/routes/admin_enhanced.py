@@ -308,7 +308,7 @@ def get_ticket_timeline(ticket_id):
         audit_logs = AuditLog.query.filter_by(
             target_type='ticket',
             target_id=ticket_id
-        ).order_by(AuditLog.timestamp.asc()).all()
+        ).order_by(AuditLog.created_at.asc()).all()
         
         for log in audit_logs:
             icon_map = {
@@ -325,7 +325,7 @@ def get_ticket_timeline(ticket_id):
                 'type': log.action,
                 'title': log.action.replace('_', ' ').title(),
                 'description': f'Action by {log.admin.name if log.admin else "System"}',
-                'timestamp': log.timestamp.isoformat(),
+                'timestamp': log.created_at.isoformat(),
                 'icon': icon_map.get(log.action, '📌'),
                 'details': log.details
             })
