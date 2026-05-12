@@ -4,13 +4,13 @@ from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 from models.user import User
 
 def token_required(f):
-    """Decorator — token optional. If present and valid, sets user identity. If absent, uses guest."""
+    """Decorator — requires valid JWT token"""
     @wraps(f)
     def decorated(*args, **kwargs):
         try:
-            verify_jwt_in_request(optional=True)
-        except Exception:
-            pass  # No token is fine — guest access allowed
+            verify_jwt_in_request()
+        except Exception as e:
+            return jsonify({'error': 'Authentication required', 'message': str(e)}), 401
         return f(*args, **kwargs)
     return decorated
 

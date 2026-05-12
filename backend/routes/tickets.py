@@ -34,23 +34,7 @@ def predict():
 def create_ticket():
     """Create new ticket"""
     try:
-        # Use JWT identity if available, else fall back to guest user
         user_id = get_jwt_identity()
-        if not user_id:
-            # Get or create guest user
-            guest = User.query.filter_by(email='guest@nexoraai.com').first()
-            if not guest:
-                guest = User(
-                    name='Guest',
-                    email='guest@nexoraai.com',
-                    mobile='0000000000',
-                    role='user'
-                )
-                guest.set_password('guest_pass_internal')
-                db.session.add(guest)
-                db.session.flush()
-            user_id = guest.id
-
         data = request.get_json()
         
         # Validate required fields
@@ -88,11 +72,6 @@ def get_tickets():
     """Get user tickets"""
     try:
         user_id = get_jwt_identity()
-        if not user_id:
-            guest = User.query.filter_by(email='guest@nexoraai.com').first()
-            if not guest:
-                return jsonify({'tickets': [], 'total': 0, 'pages': 0, 'current_page': 1}), 200
-            user_id = guest.id
         
         # Get query parameters
         status = request.args.get('status')
@@ -210,11 +189,6 @@ def get_analytics():
     """Get analytics data"""
     try:
         user_id = get_jwt_identity()
-        if not user_id:
-            guest = User.query.filter_by(email='guest@nexoraai.com').first()
-            if not guest:
-                return jsonify({'stats': {'total': 0, 'open': 0, 'in_progress': 0, 'closed': 0, 'high_priority': 0}, 'categories': {}, 'priorities': {}, 'monthly': {}}), 200
-            user_id = guest.id
         
         # Get all user tickets
         tickets = Ticket.query.filter_by(user_id=user_id).all()

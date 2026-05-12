@@ -237,7 +237,7 @@
       <div class="logo">NexoraAI</div>
       <ul class="nav-links">
         <li><a href="admin-dashboard-enhanced.html" class="active">Admin Panel</a></li>
-        <li><a href="dashboard.html" class="btn btn-secondary" onclick="authUtils.clearAuthData()">Exit Admin</a></li>
+        <li><a href="#" onclick="authUtils.logout()" class="btn btn-secondary">Logout</a></li>
       </ul>
     </div>
   </nav>
@@ -520,9 +520,7 @@
   <script src="js/api.js"></script>
   <script>
     // Guard: only admins can access this page
-    if (!authUtils.isAdmin()) {
-      window.location.href = 'dashboard.html';
-    }
+    if (!authUtils.protectAdminPage()) { throw new Error('Unauthorized'); }
   </script>
   <script src="js/admin-enhanced.js"></script>
 </body>
